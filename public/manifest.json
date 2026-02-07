@@ -1,0 +1,14 @@
+{
+  "name": "LifeQuest â Level Up Your Life",
+  "short_name": "LifeQuest",
+  "description": "A gamified life tracker RPG with social features",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0D0D0F",
+  "theme_color": "#0D0D0F",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
