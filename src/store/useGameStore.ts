@@ -5,10 +5,10 @@
 import { create } from 'zustand';
 import { SkillState, ActionLogEntry, StreakData, PenaltyState, QuestCompletion, TodoItem, SkillId } from '@/lib/types';
 import { getLevel, getTotalLevel, getTitle, getStreakMultiplier, getDecayAmount } from '@/lib/game-logic/levelSystem';
-import { getDefaultSkills, SKILL_DEFS } from 'A/lib/game-logic/skillSystem';
+import { getDefaultSkills, SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 import { getDailyQuests, getWeeklyQuests, getQuestProgress, isQuestComplete, todayStr, getWeekKey } from '@/lib/game-logic/questSystem';
 import { checkAchievements, getAchievement, ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
-import { updateStreak, getDefaultStreaks, getStreakMultiplier as streakMult } from 'A/lib/game-logic/streakSystem';
+import { updateStreak, getDefaultStreaks, getStreakMultiplier as streakMult } from '@/lib/game-logic/streakSystem';
 import { getDefaultPenalty, checkDailyPenalty } from '@/lib/game-logic/hardcoreMode';
 
 interface GameStore {
