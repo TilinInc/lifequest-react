@@ -1,9 +1,9 @@
 // ============================================
-// LIFEQUEST â UI State Store (Zustand)
+// LIFEQUEST — UI State Store (Zustand)
 // ============================================
 
 import { create } from 'zustand';
-import { TabId, Toast, ToastType, SkillId } from 'A/lib/types';
+import { TabId, Toast, ToastType, SkillId } from '@/lib/types';
 
 interface UIStore {
   // Navigation

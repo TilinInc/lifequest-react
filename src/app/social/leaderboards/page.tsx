@@ -38,9 +38,9 @@ const mockFriendsLeaderboard: LeaderboardUser[] = [
 const skills = ['JavaScript', 'Python', 'Design', 'Data Science', 'DevOps'];
 
 const getMedalEmoji = (rank: number): string => {
-  if (rank === 1) return 'ð¥';
-  if (rank === 2) return 'ð¥';
-  if (rank === 3) return 'ð¥';
+  if (rank === 1) return '🥇';
+  if (rank === 2) return '🥈';
+  if (rank === 3) return '🥉';
   return '';
 };
 

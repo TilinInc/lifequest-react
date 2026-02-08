@@ -19,18 +19,18 @@ const MOCK_PROFILE = {
   actionsLogged: 342,
   achievementsUnlocked: 18,
   skills: [
-    { id: 'strength', name: 'Strength', icon: 'ðª', color: '#EF4444', level: 18 },
-    { id: 'endurance', name: 'Endurance', icon: 'ð', color: '#F59E0B', level: 14 },
-    { id: 'discipline', name: 'Discipline', icon: 'âï¸', color: '#8B5CF6', level: 15 },
-    { id: 'intellect', name: 'Intellect', icon: 'ð§ ', color: '#3B82F6', level: 12 },
-    { id: 'social', name: 'Social', icon: 'ð¥', color: '#EC4899', level: 10 },
-    { id: 'mind', name: 'Mind', icon: 'ð§', color: '#14B8A6', level: 9 },
-    { id: 'durability', name: 'Durability', icon: 'ð¡ï¸', color: '#6366F1', level: 9 },
+    { id: 'strength', name: 'Strength', icon: '💪', color: '#EF4444', level: 18 },
+    { id: 'endurance', name: 'Endurance', icon: '🏃', color: '#F59E0B', level: 14 },
+    { id: 'discipline', name: 'Discipline', icon: '⚔️', color: '#8B5CF6', level: 15 },
+    { id: 'intellect', name: 'Intellect', icon: '🧠', color: '#3B82F6', level: 12 },
+    { id: 'social', name: 'Social', icon: '👥', color: '#EC4899', level: 10 },
+    { id: 'mind', name: 'Mind', icon: '🧘', color: '#14B8A6', level: 9 },
+    { id: 'durability', name: 'Durability', icon: '🛡️', color: '#6366F1', level: 9 },
   ],
   recentAchievements: [
-    { name: 'Centurion Grinder', icon: 'ð¥', desc: '100 total actions' },
-    { name: 'Week Warrior', icon: 'ð', desc: '7-day streak' },
-    { name: 'STR Lv10', icon: 'ðª', desc: 'Reach STR level 10' },
+    { name: 'Centurion Grinder', icon: '🔥', desc: '100 total actions' },
+    { name: 'Week Warrior', icon: '📅', desc: '7-day streak' },
+    { name: 'STR Lv10', icon: '💪', desc: 'Reach STR level 10' },
   ],
 };
 
@@ -48,7 +48,7 @@ export default function PublicProfilePage() {
     <div className="min-h-screen bg-bg-primary pb-20">
       <div className="max-w-lg mx-auto px-4 py-4 space-y-6">
         {/* Back */}
-        <Link href="/social/feed" className="text-text-muted hover:text-text-primary text-sm">â Back</Link>
+        <Link href="/social/feed" className="text-text-muted hover:text-text-primary text-sm">← Back</Link>
 
         {/* Profile Header */}
         <div className="text-center">
@@ -57,7 +57,7 @@ export default function PublicProfilePage() {
           </div>
           <h1 className="text-xl font-bold">{profile.displayName}</h1>
           <p className="text-text-secondary text-sm">@{profile.username}</p>
-          <p className="text-accent-gold font-medium mt-1">{profile.title} â Level {profile.totalLevel}</p>
+          <p className="text-accent-gold font-medium mt-1">{profile.title} — Level {profile.totalLevel}</p>
           {profile.bio && <p className="text-text-muted text-sm mt-2">{profile.bio}</p>}
 
           <div className="flex gap-3 justify-center mt-4">
@@ -69,7 +69,7 @@ export default function PublicProfilePage() {
                 'bg-accent-gold text-bg-primary hover:brightness-110'
               }`}
             >
-              {friendStatus === 'friends' ? 'â Friends' : friendStatus === 'pending' ? 'Pending...' : 'Add Friend'}
+              {friendStatus === 'friends' ? '✓ Friends' : friendStatus === 'pending' ? 'Pending...' : 'Add Friend'}
             </button>
             <Link href={`/social/messages/${params.userId}`} className="px-6 py-2 rounded-xl font-medium text-sm border border-border-subtle hover:bg-bg-hover transition-all">
               Message

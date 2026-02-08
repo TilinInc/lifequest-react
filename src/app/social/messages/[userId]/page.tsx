@@ -105,7 +105,7 @@ export default function ChatPage() {
   const userInfo = {
     userId: userId || 'user1',
     username: 'AlexJ',
-    avatar: 'ð¨',
+    avatar: '👨',
   };
 
   return (
@@ -117,7 +117,7 @@ export default function ChatPage() {
             href="/social/messages"
             className="text-text-secondary hover:text-text-primary transition"
           >
-            â Back
+            ← Back
           </Link>
           <div className="w-10 h-10 rounded-full bg-bg-tertiary flex items-center justify-center text-lg">
             {userInfo.avatar}

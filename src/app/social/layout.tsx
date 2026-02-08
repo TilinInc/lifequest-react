@@ -1,5 +1,5 @@
 import BottomNavigation from '@/components/Shared/BottomNavigation';
-import ToastContainer from 'A/components/Shared/Toast';
+import ToastContainer from '@/components/Shared/Toast';
 
 export default function SocialLayout({ children }: { children: React.ReactNode }) {
   return (

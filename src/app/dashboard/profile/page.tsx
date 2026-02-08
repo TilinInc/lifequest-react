@@ -1,85 +1,284 @@
-// ============================================
-// LIFEQUEST â Quest System
-// 81 daily quests (5/day) + 29 weekly quests (3/week)
-// ============================================
+'use client';
 
-import { Quest, ActionLogEntry, SkillId } from '../types';
+import { useRef } from 'react';
+import { useGameStore } from '@/store/useGameStore';
+import { useUIStore } from '@/store/useUIStore';
+import { getLevel, getTotalLevel, getTitle, getSkillTitle } from '@/lib/game-logic/levelSystem';
+import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
+import { ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
 
-/- --- Daily Quest Pool (81 quests) ---
-export const DAILY_QUESTS: Quest[] = [
-  // Skill count quests
-  { id: 'dq_built_diff', name: 'Built Different', desc: '2 Strength actions', type: 'skill_count', skill: 'strength', target: 2, xp: 150 },
-  { id: 'dq_cardio_king', name: 'Cardio King', desc: '2 Endurance actions', type: 'skill_count', skill: 'endurance', target: 2, xp: 150 },
-  { id: 'dq_iron_will', name: 'Iron Will', desc: '2 Discipline actions', type: 'skill_count', skill: 'discipline', target: 2, xp: 150 },
-  { id: 'dq_big_brain', name: 'Big Brain', desc: '2 Intellect actions', type: 'skill_count', skill: 'intellect', target: 2, xp: 150 },
-  { id: 'dq_people_person', name: 'People Person', desc: '2 Social actions', type: 'skill_count', skill: 'social', target: 2, xp: 150 },
-  { id: 'dq_inner_peace', name: 'Inner Peace', desc: '2 Mind actions', type: 'skill_count', skill: 'mind', target: 2, xp: 150 },
-  { id: 'dq_recovery', name: 'Recovery Day', desc: '2 Durability actions', type: 'skill_count', skill: 'durability', target: 2, xp: 150 },
-  { id: 'dq_str3', name: 'Power Hour', desc: '3 Strength actions', type: 'skill_count', skill: 'strength', target: 3, xp: 200 },
-  { id: 'dq_end3', name: 'Endurance Test', desc: '3 Endurance actions', type: 'skill_count', skill: 'endurance', target: 3, xp: 200 },
-  { id: 'dq_dis3', name: 'Disciplined Day', desc: '3 Discipline actions', type: 'skill_count', skill: 'discipline', target: 3, xp: 200 },
-  { id: 'dq_int3', name: 'Scholar\'s Path', desc: '3 Intellect actions', type: 'skill_count', skill: 'intellect', target: 3, xp: 200 },
+export default function ProfilePage() {
+  const profileSection = useUIStore(s => s.profileSection);
+  const setProfileSection = useUIStore(s => s.setProfileSection);
 
-  // Multi-skill quests
-  { id: 'dq_no_days_off', name: 'No Days Off', desc: 'Log 4 different skills', type: 'unique_skills', target: 4, xp: 200 },
-  { id: 'dq_well_rounded', name: 'Well-Rounded', desc: 'Log 5 different skills', type: 'unique_skills', target: 5, xp: 250 },
-  { id: 'dq_all_around', name: 'All-Around Legend', desc: 'Log all 7 skills', type: 'unique_skills', target: 7, xp: 300 },
-  { id: 'dq_3skills', name: 'Triple Threat', desc: 'Log 3 different skills', type: 'unique_skills', target: 3, xp: 150 },
+  const skills = useGameStore(s => s.skills);
+  const log = useGameStore(s => s.log);
+  const unlockedAchievements = useGameStore(s => s.unlockedAchievements);
+  const streaks = useGameStore(s => s.streaks);
+  const hardcoreMode = useGameStore(s => s.hardcoreMode);
+  const penalty = useGameStore(s => s.penalty);
+  const toggleHardcore = useGameStore(s => s.toggleHardcore);
+  const loadState = useGameStore(s => s.loadState);
 
-  // Action count quests
-  { id: 'dq_active5', name: 'Stay Active', desc: '5 total actions today', type: 'actions', target: 5, xp: 175 },
-  { id: 'dq_active7', name: 'Grind Mode', desc: '7 total actions today', type: 'actions', target: 7, xp: 225 },
-  { id: 'dq_active10', name: 'Unstoppable', desc: '10 total actions today', type: 'actions', target: 10, xp: 300 },
-  { id: 'dq_active3', name: 'Getting Started', desc: '3 total actions today', type: 'actions', target: 3, xp: 100 },
+  const totalLevel = getTotalLevel(skills);
+  const title = getTitle(totalLevel, hardcoreMode, penalty.tier);
+  const globalStreak = streaks.global.current;
+  const bestStreak = streaks.global.best;
+  const totalActions = log.length;
 
-  // Specific skill-action quests
-  { id: 'dq_gym_day', name: 'Gym Day', desc: 'Hit the gym', type: 'skill_action', skill: 'strength', target: 1, xp: 100 },
-  { id: 'dq_run_day', name: 'Runner\'s High', desc: 'Go for a run', type: 'skill_action', skill: 'endurance', target: 1, xp: 100 },
-  { id: 'dq_read_day', name: 'Bookworm', desc: 'Read for 30 min', type: 'skill_action', skill: 'intellect', target: 1, xp: 100 },
-  { id: 'dq_meditate', name: 'Zen State', desc: 'Meditate today', type: 'skill_action', skill: 'mind', target: 1, xp: 100 },
-  { id: 'dq_sleep_well', name: 'Well Rested', desc: 'Get 7hr sleep', type: 'skill_action', skill: 'durability', target: 1, xp: 100 },
-  { id: 'dq_clean_eat', name: 'Clean Machine', desc: 'Eat clean today', type: 'skill_action', skill: 'discipline', target: 1, xp: 100 },
-  { id: 'dq_connect', name: 'Stay Connected', desc: 'Reach out to someone', type: 'skill_action', skill: 'social', target: 1, xp: 100 },
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Combo quests
-  { id: 'dq_body_mind', name: 'Body & Mind', desc: 'Strength + Mind action', type: 'unique_skills', target: 2, xp: 175 },
-  { id: 'dq_warrior', name: 'Warrior Spirit', desc: 'Strength + Endurance + Discipline', type: 'unique_skills', target: 3, xp: 200 },
-  { id: 'dq_scholar_warrior', name: 'Scholar Warrior', desc: 'Strength + Intellect', type: 'unique_skills', target: 2, xp: 175 },
-  { id: 'dq_social_mind', name: 'Emotional IQ', desc: 'Social + Mind', type: 'unique_skills', target: 2, xp: 175 },
+  // Get first letter of title for avatar
+  const avatarLetter = title.charAt(0).toUpperCase();
 
-  // More variants for pool variety
-  { id: 'dq_double_str', name: 'Double Down: STR', desc: '2 Strength actions', type: 'skill_count', skill: 'strength', target: 2, xp: 140 },
-  { id: 'dq_double_end', name: 'Double Down: END', desc: '2 Endurance actions', type: 'skill_count', skill: 'endurance', target: 2, xp: 140 },
-  { id: 'dq_double_dis', name: 'Double Down: DIS', desc: '2 Discipline actions', type: 'skill_count', skill: 'discipline', target: 2, xp: 140 },
-  { id: 'dq_double_int', name: 'Double Down: INT', desc: '2 Intellect actions', type: 'skill_count', skill: 'intellect', target: 2, xp: 140 },
-  { id: 'dq_double_soc', name: 'Double Down: SOC', desc: '2 Social actions', type: 'skill_count', skill: 'social', target: 2, xp: 140 },
-  { id: 'dq_double_mnd', name: 'Double Down: MND', desc: '2 Mind actions', type: 'skill_count', skill: 'mind', target: 2, xp: 140 },
-  { id: 'dq_double_dur', name: 'Double Down: DUR', desc: '2 Durability actions', type: 'skill_count', skill: 'durability', target: 2, xp: 140 },
+  // Export game state as JSON
+  const handleExport = () => {
+    const gameState = {
+      skills,
+      log,
+      unlockedAchievements,
+      streaks,
+      hardcoreMode,
+      penalty,
+      timestamp: new Date().toISOString(),
+    };
 
-  { id: 'dq_grinder4', name: 'The Grinder', desc: '4 total actions', type: 'actions', target: 4, xp: 125 },
-  { id: 'dq_grinder6', name: 'Non-Stop', desc: '6 total actions', type: 'actions', target: 6, xp: 200 },
-  { id: 'dq_grinder8', name: 'Machine Mode', desc: '8 total actions', type: 'actions', target: 8, xp: 250 },
+    const dataStr = JSON.stringify(gameState, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `lifequest-backup-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
-  { id: 'dq_morning_routine', name: 'Morning Routine', desc: 'Discipline + Durability', type: 'unique_skills', target: 2, xp: 150 },
-  { id: 'dq_evening_wind', name: 'Evening Wind Down', desc: 'Mind + Durability', type: 'unique_skills', target: 2, xp: 150 },
-  { id: 'dq_full_body', name: 'Full Body', desc: 'Strength + Endurance', type: 'unique_skills', target: 2, xp: 150 },
-  { id: 'dq_brain_body', name: 'Brain & Body', desc: 'Intellect + Endurance', type: 'unique_skills', target: 2, xp: 150 },
+  // Import game state from JSON
+  const handleImport = () => {
+    fileInputRef.current?.click();
+  };
 
-  { id: 'dq_quad', name: 'Quad Stack', desc: '4 actions in any skill', type: 'actions', target: 4, xp: 150 },
-  { id: 'dq_penta', name: 'Penta Kill', desc: '5 different skills', type: 'unique_skills', target: 5, xp: 225 },
-  { id: 'dq_hexa', name: 'Hexa Grind', desc: '6 different skills', type: 'unique_skills', target: 6, xp: 275 },
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  // Extra quests to reach ~81
-  { id: 'dq_str_focus', name: 'Strength Focus', desc: 'Log Strength', type: 'skill_action', skill: 'strength', target: 1, xp: 80 },
-  { id: 'dq_end_focus', name: 'Endurance Focus', desc: 'Log Endurance', type: 'skill_action', skill: 'endurance', target: 1, xp: 80 },
-  { id: 'dq_dis_focus', name: 'Discipline Focus', desc: 'Log Discipline', type: 'skill_action', skill: 'discipline', target: 1, xp: 80 },
-  { id: 'dq_int_focus', name: 'Intellect Focus', desc: 'Log Intellect', type: 'skill_action', skill: 'intellect', target: 1, xp: 80 },
-  { id: 'dq_soc_focus', name: 'Social Focus', desc: 'Log Social', type: 'skill_action', skill: 'social', target: 1, xp: 80 },
-  { id: 'dq_mnd_focus', name: 'Mind Focus', desc: 'Log Mind', type: 'skill_action', skill: 'mind', target: 1, xp: 80 },
-  { id: 'dq_dur_focus', name: 'Durability Focus', desc: 'Log Durability', type: 'skill_action', skill: 'durability', target: 1, xp: 80 },
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const importedState = JSON.parse(content);
 
-  { id: 'dq_beast_mode', name: 'Beast Mode', desc: '12 total actions', type: 'actions', target: 12, xp: 350 },
-  { id: 'dq_legend_day', name: 'Legendary Day', desc: '15 total actions', type: 'actions', target: 15, xp: 500 },
-  { id: 'dq_str4', name: 'Strength Overload', desc: '4 Strength actions', type: 'skill_count', skill: 'strength', target: 4, xp: 250 },
-  { id: 'dq_dis
-4', name: 'Self-Mastery', desc: '4 Discip+PÃP]e Xcti[cà¢ÂöFc
+        // Validate and load state
+        if (importedState.skills && importedState.log && importedState.unlockedAchievements) {
+          loadState(importedState);
+          alert('Game state imported successfully!');
+        } else {
+          alert('Invalid game state file. Please check the file format.');
+        }
+      } catch (err) {
+        alert('Failed to import game state. Please ensure the file is valid JSON.');
+      }
+    };
+    reader.readAsText(file);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  if (profileSection === 'pictures') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 mb-6">
+          <button
+            onClick={() => setProfileSection('main')}
+            className="text-2xl hover:opacity-70 transition"
+          >
+            ←
+          </button>
+          <h1 className="text-2xl font-bold">Progress Pictures</h1>
+        </div>
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4 opacity-50">📸</div>
+          <p className="text-text-muted">Progress pictures feature coming soon</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileSection === 'weight') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 mb-6">
+          <button
+            onClick={() => setProfileSection('main')}
+            className="text-2xl hover:opacity-70 transition"
+          >
+            ←
+          </button>
+          <h1 className="text-2xl font-bold">Weight Log</h1>
+        </div>
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4 opacity-50">⚖️</div>
+          <p className="text-text-muted">Weight log feature coming soon</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Profile Header */}
+      <div className="text-center pt-2">
+        {/* Avatar */}
+        <div className="flex justify-center mb-4">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-3xl font-bold text-bg-primary">
+            {avatarLetter}
+          </div>
+        </div>
+
+        {/* Title and Level */}
+        <h1 className="text-2xl font-bold mb-1">{title}</h1>
+        <p className="text-text-secondary text-sm">Total Level: {totalLevel}</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="glass rounded-xl p-4 border border-border-subtle">
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Total Level</div>
+          <div className="text-3xl font-bold text-accent-gold">{totalLevel}</div>
+        </div>
+        <div className="glass rounded-xl p-4 border border-border-subtle">
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Global Streak</div>
+          <div className="text-3xl font-bold">{globalStreak} 🔥</div>
+        </div>
+        <div className="glass rounded-xl p-4 border border-border-subtle">
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Best Streak</div>
+          <div className="text-3xl font-bold">{bestStreak} 🏆</div>
+        </div>
+        <div className="glass rounded-xl p-4 border border-border-subtle">
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Actions Logged</div>
+          <div className="text-3xl font-bold">{totalActions}</div>
+        </div>
+        <div className="glass rounded-xl p-4 border border-border-subtle col-span-2">
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Achievements Unlocked</div>
+          <div className="text-3xl font-bold">
+            <span className="text-accent-gold">{unlockedAchievements.length}</span>
+            <span className="text-text-muted text-lg"> / {ACHIEVEMENTS.length}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Skill Badges */}
+      <div>
+        <h2 className="font-bold text-lg mb-3">Skills</h2>
+        <div className="overflow-x-auto pb-2">
+          <div className="flex gap-3 min-w-min">
+            {SKILL_DEFS.map(skillDef => {
+              const skill = skills.find(s => s.id === skillDef.id);
+              const xp = skill?.xp || 0;
+              const level = getLevel(xp);
+              const skillTitle = getSkillTitle(skillDef.id, level);
+
+              return (
+                <div
+                  key={skillDef.id}
+                  className="glass rounded-xl px-4 py-3 border border-border-subtle whitespace-nowrap flex items-center gap-3"
+                  style={{
+                    borderColor: skillDef.color + '33',
+                    background: skillDef.color + '08',
+                  }}
+                >
+                  <div className="text-2xl">{skillDef.icon}</div>
+                  <div>
+                    <div className="text-xs text-text-muted uppercase tracking-wider font-bold">
+                      {skillDef.name}
+                    </div>
+                    <div className="text-lg font-bold" style={{ color: skillDef.color }}>
+                      {level}
+                    </div>
+                    <div className="text-[10px] text-text-muted">{skillTitle}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Hardcore Mode Toggle */}
+      <div className="glass rounded-xl p-4 border border-border-subtle">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-text-primary">Hardcore Mode</h3>
+            <p className="text-xs text-text-muted mt-1">
+              {hardcoreMode ? 'Enabled - Penalties active' : 'Disabled - No penalties'}
+            </p>
+          </div>
+          <button
+            onClick={toggleHardcore}
+            className={`relative w-12 h-6 rounded-full transition-all ${
+              hardcoreMode ? 'bg-red-500/50' : 'bg-gray-500/30'
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all ${
+                hardcoreMode ? 'translate-x-6 bg-red-500' : 'bg-gray-400'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Links */}
+      <div className="space-y-3">
+        <button
+          onClick={() => setProfileSection('pictures')}
+          className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold hover:shadow-lg hover:shadow-accent-gold/20 transition-all text-left"
+        >
+          <div className="text-3xl mb-2">📸</div>
+          <h3 className="font-bold text-text-primary">Progress Pictures</h3>
+          <p className="text-xs text-text-muted mt-1">Track your physical transformation</p>
+        </button>
+
+        <button
+          onClick={() => setProfileSection('weight')}
+          className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold hover:shadow-lg hover:shadow-accent-gold/20 transition-all text-left"
+        >
+          <div className="text-3xl mb-2">⚖️</div>
+          <h3 className="font-bold text-text-primary">Weight Log</h3>
+          <p className="text-xs text-text-muted mt-1">Monitor your weight progression</p>
+        </button>
+      </div>
+
+      {/* Export / Import Buttons */}
+      <div className="space-y-3">
+        <button
+          onClick={handleExport}
+          className="w-full glass rounded-xl px-4 py-3 border border-border-subtle text-text-primary font-bold hover:border-accent-gold hover:bg-accent-gold/5 transition-all flex items-center justify-center gap-2"
+        >
+          <span>📥</span>
+          Export Game State
+        </button>
+
+        <button
+          onClick={handleImport}
+          className="w-full glass rounded-xl px-4 py-3 border border-border-subtle text-text-primary font-bold hover:border-accent-gold hover:bg-accent-gold/5 transition-all flex items-center justify-center gap-2"
+        >
+          <span>📤</span>
+          Import Game State
+        </button>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileSelect}
+          className="hidden"
+          aria-label="Import game state file"
+        />
+      </div>
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Level & XP System
+// LIFEQUEST — Level & XP System
 // Exact port of original game mechanics
 // ============================================
 

@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Type Definitions
+// LIFEQUEST — Type Definitions
 // ============================================
 
 // --- Skills ---
@@ -43,7 +43,7 @@ export interface ActionLogEntry {
 export interface StreakData {
   current: number;
   best: number;
-  lastActiveDate: string | null; // YYYY-MM-DD
+  lastActiveDate: string | null;
 }
 
 // --- Quests ---
@@ -91,7 +91,7 @@ export type PenaltyTier = 'warning' | 'penaltyZone' | 'critical' | null;
 export interface PenaltyState {
   tier: PenaltyTier;
   consecutiveMisses: number;
-  penaltyZoneSurvived: number;
+  penaltyZooneSurvived: number;
   xpDecayed: number;
   lastCheckDate: string | null;
   penaltyQuestActive: boolean;

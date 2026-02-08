@@ -145,4 +145,126 @@ export default function FriendsPage() {
             Requests
             <span className="ml-2 inline-block rounded-full bg-accent-green/20 px-2 py-0.5 text-sm text-accent-green font-semibold">
               {filteredRequests.length}
-Â÷7ãà¢¶7FfUF"ÓÓÒw&WVW7G2rbb¢ÆFb6Æ74æÖSÒ&'6öÇWFR&÷GFöÒÓÆVgBÓ&vBÓÓ&rÖ66VçBÖvöÆB&÷VæFVB×B"óà¢Ð¢Âö'WGFöãà¢ÂöFcà ¢²ò¢g&VæG2F"6öçFVçB¢÷Ð¢¶7FfUF"ÓÓÒvg&VæG2rbb¢Ãà¢¶fÇFW&VDg&VæG2æÆVæwFâò¢ÆFb6Æ74æÖSÒ'76R×Ó2#à¢¶fÇFW&VDg&VæG2æÖg&VæBÓâ¢ÆF`¢¶W×¶g&VæBæGÐ¢6Æ74æÖSÒ&vÆ72&÷VæFVBÖÆr&÷&FW"&÷&FW"Ö&÷&FW"×7V'FÆR&rÖ&r×6V6öæF'óSÓBfÆWFV×2Ö6VçFW"§W7FgÖ&WGvVVâ÷fW#¦&rÖ&r×6V6öæF'ósG&ç6FöâÖÆÂ ¢à¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"vÓB#à¢²ò¢fF"¢÷Ð¢ÆFb6Æ74æÖSÒ&fÆWÓ"rÓ"FV×2Ö6VçFW"§W7FgÖ6VçFW"&÷VæFVBÖgVÆÂ&rÖw&FVçB×FòÖ'"g&öÒÖ66VçBÖvöÆBFòÖ66VçBÖw&VVâFWBÖ&r×&Ö'föçBÖ&öÆB#à¢¶g&VæBæfF'Ð¢ÂöFcà ¢²ò¢æfò¢÷Ð¢ÆFcà¢Æ26Æ74æÖSÒ'FWB×FWB×&Ö'föçB×6VÖ&öÆB#à¢¶g&VæBçW6W&æÖWÐ¢Âö3à¢Ç6Æ74æÖSÒ'FWB×FWBÖ×WFVBFWB×6Ò#à¢ÆWfVÂ¶g&VæBçF÷FÄÆWfVÇÐ¢Â÷à¢ÂöFcà¢ÂöFcà ¢²ò¢fWr&öfÆRÆæ²¢÷Ð¢ÄÆæ°¢&Vc×¶÷6ö6Â÷&öfÆRòG¶g&VæBæGÖÐ¢6Æ74æÖSÒ'&÷VæFVBÖÆr&rÖ66VçBÖvöÆBó#ÓBÓ"FWBÖ66VçBÖvöÆBföçBÖÖVFVÒ÷fW#¦&rÖ66VçBÖvöÆBó3G&ç6FöâÖ6öÆ÷'2 ¢à¢fWr&öfÆP¢ÂôÆæ³à¢ÂöFcà¢Ð¢ÂöFcà¢¢¢ÆFb6Æ74æÖSÒ'&÷VæFVBÖÆr&÷&FW"&÷&FW"Ö&÷&FW"×7V'FÆR&rÖ&r×6V6öæF'óSÓ"FWBÖ6VçFW"#à¢Ç6Æ74æÖSÒ'FWB×FWB×6V6öæF'#à¢·6V&6VW'¢òtæòg&VæG2f÷VæBÖF6ær÷W"6V&6âp¢¢u÷RfRæòg&VæG2WBâwÐ¢Â÷à¢ÂöFcà¢Ð¢Âóà¢Ð ¢²ò¢&WVW7G2F"6öçFVçB¢÷Ð¢¶7FfUF"ÓÓÒw&WVW7G2rbb¢Ãà¢¶fÇFW&VE&WVW7G2æÆVæwFâò¢ÆFb6Æ74æÖSÒ'76R×Ó2#à¢¶fÇFW&VE&WVW7G2æÖ&WVW7BÓâ¢ÆF`¢¶W×·&WVW7BæGÐ¢6Æ74æÖSÒ&vÆ72&÷VæFVBÖÆr&÷&FW"&÷&FW"Ö&÷&FW"×7V'FÆR&rÖ&r×6V6öæF'óSÓBfÆWFV×2Ö6VçFW"§W7FgÖ&WGvVVâ÷fW#¦&rÖ&r×6V6öæF'ósG&ç6FöâÖÆÂ ¢à¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"vÓB#à¢²ò¢fF"¢÷Ð¢ÆFb6Æ74æÖSÒ&fÆWÓ"rÓ"FV×2Ö6VçFW"§W7FgÖ6VçFW"&÷VæFVBÖgVÆÂ&rÖw&FVçB×FòÖ'"g&öÒÖ66VçBÖvöÆBFòÖ66VçBÖw&VVâFWBÖ&r×&Ö'föçBÖ&öÆB#à¢·&WVW7BæfF'Ð¢ÂöFcà ¢²ò¢æfò¢÷Ð¢ÆFcà¢Æ26Æ74æÖSÒ'FWB×FWB×&Ö'föçB×6VÖ&öÆB#à¢·&WVW7BçW6W&æÖWÐ¢Âö3à¢Ç6Æ74æÖSÒ'FWB×FWBÖ×WFVBFWB×6Ò#çvçG2Fò&R÷W"g&VæCÂ÷à¢ÂöFcà¢ÂöFcà ¢²ò¢7Föâ'WGFöç2¢÷Ð¢ÆFb6Æ74æÖSÒ&fÆWvÓ"#à¢Æ'WGFöà¢öä6Æ6³×²ÓâæFÆT66WB&WVW7BæBÐ¢6Æ74æÖSÒ'&÷VæFVBÖÆr&rÖ66VçBÖw&VVâÓBÓ"FWBÖ&r×&Ö'föçBÖÖVFVÒ÷fW#¦&rÖ66VçBÖw&VVâóG&ç6FöâÖ6öÆ÷'2 ¢à¢66W@¢Âö'WGFöãà¢Æ'WGFöà¢öä6Æ6³×²ÓâæFÆTFV6ÆæR&WVW7BæBÐ¢6Æ74æÖSÒ'&÷VæFVBÖÆr&rÖ&r×FW'F'&÷&FW"&÷&FW"Ö&÷&FW"×7V'FÆRÓBÓ"FWB×FWB×6V6öæF'föçBÖÖVFVÒ÷fW#¦&rÖ&r×6V6öæF'G&ç6FöâÖ6öÆ÷'2 ¢à¢FV6ÆæP¢Âö'WGFöãà¢ÂöFcà¢ÂöFcà¢Ð¢ÂöFcà¢¢¢ÆFb6Æ74æÖSÒ'&÷VæFVBÖÆr&÷&FW"&÷&FW"Ö&÷&FW"×7V'FÆR&rÖ&r×6V6öæF'óSÓ"FWBÖ6VçFW"#à¢Ç6Æ74æÖSÒ'FWB×FWB×6V6öæF'#à¢·6V&6VW'¢òtæò&WVW7G2f÷VæBÖF6ær÷W"6V&6âp¢¢u÷RfRæòVæFærg&VæB&WVW7G2âwÐ¢Â÷à¢ÂöFcà¢Ð¢Âóà¢Ð¢ÂöFcà ¢²ò¢fÆöFær7Föâ'WGFöâÒFBg&VæB¢÷Ð¢ÄÆæ°¢&VcÒ"÷6ö6ÂöFBÖg&VæB ¢6Æ74æÖSÒ&fVB&÷GFöÒÓ&vBÓfÆWÓbrÓbFV×2Ö6VçFW"§W7FgÖ6VçFW"&÷VæFVBÖgVÆÂ&rÖw&FVçB×FòÖ'"g&öÒÖ66VçBÖvöÆBFòÖ66VçBÖw&VVâFWBÖ&r×&Ö'föçBÖ&öÆBFWBÓ'Â6F÷rÖÆr÷fW#§6F÷r×Â÷fW#§66ÆRÓG&ç6FöâÖÆÂ ¢FFÆSÒ$FBg&VæB ¢à¢°¢ÂôÆæ³à¢ÂöFcà¢°§Ð
+            </span>
+            {activeTab === 'requests' && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-accent-gold rounded-t" />
+            )}
+          </button>
+        </div>
+
+        {/* Friends Tab Content */}
+        {activeTab === 'friends' && (
+          <>
+            {filteredFriends.length > 0 ? (
+              <div className="space-y-3">
+                {filteredFriends.map((friend) => (
+                  <div
+                    key={friend.id}
+                    className="glass rounded-lg border border-border-subtle bg-bg-secondary/50 p-4 flex items-center justify-between hover:bg-bg-secondary/70 transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Avatar */}
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent-gold to-accent-green text-bg-primary font-bold">
+                        {friend.avatar}
+                      </div>
+
+                      {/* Info */}
+                      <div>
+                        <h3 className="text-text-primary font-semibold">
+                          {friend.username}
+                        </h3>
+                        <p className="text-text-muted text-sm">
+                          Level {friend.totalLevel}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* View Profile Link */}
+                    <Link
+                      href={`/social/profile/${friend.id}`}
+                      className="rounded-lg bg-accent-gold/20 px-4 py-2 text-accent-gold font-medium hover:bg-accent-gold/30 transition-colors"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-border-subtle bg-bg-secondary/50 p-12 text-center">
+                <p className="text-text-secondary">
+                  {searchQuery
+                    ? 'No friends found matching your search.'
+                    : 'You have no friends yet.'}
+                </p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Requests Tab Content */}
+        {activeTab === 'requests' && (
+          <>
+            {filteredRequests.length > 0 ? (
+              <div className="space-y-3">
+                {filteredRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="glass rounded-lg border border-border-subtle bg-bg-secondary/50 p-4 flex items-center justify-between hover:bg-bg-secondary/70 transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Avatar */}
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent-gold to-accent-green text-bg-primary font-bold">
+                        {request.avatar}
+                      </div>
+
+                      {/* Info */}
+                      <div>
+                        <h3 className="text-text-primary font-semibold">
+                          {request.username}
+                        </h3>
+                        <p className="text-text-muted text-sm">wants to be your friend</p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleAccept(request.id)}
+                        className="rounded-lg bg-accent-green px-4 py-2 text-bg-primary font-medium hover:bg-accent-green/90 transition-colors"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => handleDecline(request.id)}
+                        className="rounded-lg bg-bg-tertiary border border-border-subtle px-4 py-2 text-text-secondary font-medium hover:bg-bg-secondary transition-colors"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-border-subtle bg-bg-secondary/50 p-12 text-center">
+                <p className="text-text-secondary">
+                  {searchQuery
+                    ? 'No requests found matching your search.'
+                    : 'You have no pending friend requests.'}
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Floating Action Button - Add Friend */}
+      <Link
+        href="/social/add-friend"
+        className="fixed bottom-8 right-8 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent-gold to-accent-green text-bg-primary font-bold text-2xl shadow-lg hover:shadow-xl hover:scale-110 transition-all"
+        title="Add Friend"
+      >
+        +
+      </Link>
+    </div>
+  );
+}

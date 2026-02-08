@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ACHIEVEMENTS } from 'A/lib/game-logic/achievementSystem';
+import { ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
 import { useGameStore } from '@/store/useGameStore';
 
 type FilterTab = 'all' | 'unlocked' | 'locked';
@@ -63,7 +63,7 @@ export default function AchievementsPage() {
             >
               {/* Lock Icon for Locked Achievements */}
               {!isUnlocked && (
-                <div className="absolute top-2 right-2 text-lg opacity-60">ð</div>
+                <div className="absolute top-2 right-2 text-lg opacity-60">🔒</div>
               )}
 
               {/* Icon */}
@@ -92,7 +92,7 @@ export default function AchievementsPage() {
       {filteredAchievements.length === 0 && (
         <div className="text-center py-12">
           <div className="text-5xl mb-4 opacity-50">
-            {filterTab === 'unlocked' ? 'ðï¸' : 'ð'}
+            {filterTab === 'unlocked' ? '🎖️' : '🔐'}
           </div>
           <p className="text-text-muted">
             {filterTab === 'unlocked'

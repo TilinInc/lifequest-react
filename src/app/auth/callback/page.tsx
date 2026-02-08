@@ -19,7 +19,7 @@ export default function AuthCallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-primary">
       <div className="text-center">
-        <div className="text-4xl animate-pulse mb-4">âï¸</div>
+        <div className="text-4xl animate-pulse mb-4">⚔️</div>
         <p className="text-text-secondary">Entering the arena...</p>
       </div>
     </div>

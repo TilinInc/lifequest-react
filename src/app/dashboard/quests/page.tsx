@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useGameStore } from '@/store/useGameStore';
 import { getDailyQuests, getWeeklyQuests, getQuestProgress, todayStr, getWeekKey } from '@/lib/game-logic/questSystem';
-import ProgressBar from 'A/components/Shared/ProgressBar';
+import ProgressBar from '@/components/Shared/ProgressBar';
 import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 
 export default function QuestsPage() {
@@ -63,7 +63,7 @@ export default function QuestsPage() {
           </div>
           {isCompleted && (
             <div className="ml-3 text-green-400">
-              <div className="text-2xl">â</div>
+              <div className="text-2xl">✓</div>
               <div className="text-[10px] font-bold">Completed</div>
             </div>
           )}
@@ -98,7 +98,7 @@ export default function QuestsPage() {
           href="/dashboard"
           className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
         >
-          â
+          ←
         </Link>
         <h1 className="text-2xl font-bold">Quests</h1>
       </div>
@@ -165,9 +165,9 @@ export default function QuestsPage() {
 
       {/* Info Section */}
       <div className="glass rounded-xl p-4 border border-border-subtle text-sm text-text-secondary">
-        <p className="mb-2">ð¡ Complete quests to earn bonus XP and progress faster!</p>
+        <p className="mb-2">💡 Complete quests to earn bonus XP and progress faster!</p>
         <p>Daily quests reset at midnight. Weekly quests reset every Sunday.</p>
       </div>
     </div>
-  
-("
+  );
+}

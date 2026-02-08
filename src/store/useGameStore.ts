@@ -1,14 +1,14 @@
 // ============================================
-// LIFEQUEST â Game State Store (Zustand)
+// LIFEQUEST — Game State Store (Zustand)
 // ============================================
 
 import { create } from 'zustand';
 import { SkillState, ActionLogEntry, StreakData, PenaltyState, QuestCompletion, TodoItem, SkillId } from '@/lib/types';
 import { getLevel, getTotalLevel, getTitle, getStreakMultiplier, getDecayAmount } from '@/lib/game-logic/levelSystem';
-import { getDefaultSkills, SKILL_DEFS } from '@/lib/game-logic/skillSystem';
+import { getDefaultSkills, SKILL_DEFS } from 'A/lib/game-logic/skillSystem';
 import { getDailyQuests, getWeeklyQuests, getQuestProgress, isQuestComplete, todayStr, getWeekKey } from '@/lib/game-logic/questSystem';
 import { checkAchievements, getAchievement, ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
-import { updateStreak, getDefaultStreaks, getStreakMultiplier as streakMult } from '@/lib/game-logic/streakSystem';
+import { updateStreak, getDefaultStreaks, getStreakMultiplier as streakMult } from 'A/lib/game-logic/streakSystem';
 import { getDefaultPenalty, checkDailyPenalty } from '@/lib/game-logic/hardcoreMode';
 
 interface GameStore {
@@ -282,169 +282,3 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
 }));
-achievements({
-      skills: newSkills,
-      log: newLog,
-      unlockedAchievements: state.unlockedAchievements,
-      globalStreak: newGlobalStreak.current,
-      totalActions,
-      totalLevel: totalLvl,
-    });
-
-    // Check quest completion
-    const today = todayStr();
-    const weekKey = getWeekKey();
-    const todayLog = newLog.filter(l => {
-      const d = new Date(l.timestamp);
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` === today;
-    });
-    const weekLog = newLog.filter(l => {
-      const d = new Date(l.timestamp);
-      const logDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const weekStart = new Date(weekKey);
-      return logDate >= weekStart;
-    });
-
-    const dailyQuests = getDailyQuests(today);
-    const weeklyQuests = getWeeklyQuests(weekKey);
-    const questsCompleted: string[] = [];
-
-    const newCompletedQuests = { ...state.completedQuests };
-    if (newCompletedQuests.dailyDate !== today) {
-      newCompletedQuests.dailyDate = today;
-      newCompletedQuests.daily = {};
-    }
-    if (newCompletedQuests.weeklyDate !== weekKey) {
-      newCompletedQuests.weeklyDate = weekKey;
-      newCompletedQuests.weekly = {};
-    }
-
-    for (const q of dailyQuests) {
-      if (!newCompletedQuests.daily[q.id] && isQuestComplete(q, todayLog)) {
-        newCompletedQuests.daily[q.id] = true;
-        questsCompleted.push(q.id);
-      }
-    }
-    for (const q of weeklyQuests) {
-      if (!newCompletedQuests.weekly[q.id] && isQuestComplete(q, weekLog)) {
-        newCompletedQuests.weekly[q.id] = true;
-        questsCompleted.push(q.id);
-      }
-    }
-
-    set({
-      skills: newSkills,
-      log: newLog,
-      streaks: newStreaks,
-      unlockedAchievements: [...state.unlockedAchievements, ...newAchievements],
-      completedQuests: newCompletedQuests,
-      todos: newTodos,
-    });
-
-    return {
-      xpEarned: totalXp,
-      leveledUp: newLevel > previousLevel,
-      previousLevel,
-      newLevel,
-      newAchievements,
-      questsCompleted,
-    };
-  },
-
-  toggleHardcore: () => {
-    set(s => ({
-      hardcoreMode: !s.hardcoreMode,
-      penalty: !s.hardcoreMode ? getDefaultPenalty() : s.penalty,
-    }));
-  },
-
-  addTodo: (skillId, actionId, actionName) => {
-    set(s => ({
-      todos: {
-        ...s.todos,
-        items: [...s.todos.items, {
-          id: `todo_${Date.now()}`,
-          skillId,
-          actionId,
-          actionName,
-          completed: false,
-        }],
-      },
-    }));
-  },
-
-  removeTodo: (index) => {
-    set(s => ({
-      todos: {
-        ...s.todos,
-        items: s.todos.items.filter((_, i) => i !== index),
-      },
-    }));
-  },
-
-  toggleTodo: (index) => {
-    set(s => ({
-      todos: {
-        ...s.todos,
-        items: s.todos.items.map((t, i) => i === index ? { ...t, completed: !t.completed } : t),
-      },
-    }));
-  },
-
-  resetTodosIfNeeded: () => {
-    const today = todayStr();
-    if (get().todos.lastResetDate !== today) {
-      set({ todos: { lastResetDate: today, items: [] } });
-    }
-  },
-
-  checkDecay: () => {
-    const state = get();
-    const today = todayStr();
-    if (state.lastDecayDate === today) return { decayed: false, losses: [] };
-
-    // Check if any skill was logged yesterday
-    const yesterday = new Date();
-    if (yesterday.getDate() === 1) {
-      yesterday.setMonth(yesterday.getMonth() - 1);
-    } else {
-      yesterday.setDate(yesterday.getDate() - 1);
-    }
-    const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
-    const loggedYesterday = state.log.some(l => {
-      const d = new Date(l.timestamp);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` === yesterdayStr;
-    });
-
-    if (loggedYesterday || !state.lastDecayDate) {
-      set({ lastDecayDate: today });
-      return { decayed: false, losses: [] };
-    }
-
-    // Apply decay
-    const losses: { skillId: string; amount: number }[] = [];
-    const newSkills = state.skills.map(s => {
-      if (s.xp <= 0) return s;
-      const amount = getDecayAmount(s.xp);
-      losses.push({ skillId: s.id, amount });
-      return { ...s, xp: Math.max(0, s.xp - amount) };
-    });
-
-    set({ skills: newSkills, lastDecayDate: today });
-    return { decayed: true, losses };
-  },
-
-  loadState: (state) => set(state),
-  setSkills: (skills) => set({ skills }),
-  setLog: (log) => set({ log }),
-  setAchievements: (ids) => set({ unlockedAchievements: ids }),
-  setStreaks: (streaks) => set({ streaks }),
-  completeQuest: (questId, type) => {
-    set(s => {
-      const newCompleted = { ...s.completedQuests };
-      if (type === 'daily') newCompleted.daily = { ...newCompleted.daily, [questId]: true };
-      else newCompleted.weekly = { ...newCompleted.weekly, [questId]: true };
-      return { completedQuests: newCompleted };
-    });
-  },
-})); delete window.__tempB64;

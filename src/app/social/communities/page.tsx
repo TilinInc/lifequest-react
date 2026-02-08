@@ -1,157 +1,169 @@
 'use client';
 
-import { useRef } from 'react';
-import { useGameStore } from '@/store/useGameStore';
-import { useUIStore } from '@/store/useUIStore';
-import { getLevel, getTotalLevel, getTitle, getSkillTitle } from '@/lib/game-logic/levelSystem';
-import { SKILL_DEFS } from 'A/lib/game-logic/skillSystem';
-import { ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
+import { useState } from 'react';
+import Link from 'next/link';
+import { useSocialStore } from '@/store/useSocialStore';
 
-export default function ProfilePage() {
-  const profileSection = useUIStore(s => s.profileSection);
-  const setProfileSection = useUIStore(s => s.setProfileSection);
+interface Community {
+  id: string;
+  name: string;
+  icon: string;
+  memberCount: number;
+  description: string;
+  isJoined: boolean;
+  type: 'public' | 'private';
+}
 
-  const skills = useGameStore(s => s.skills);
-  const log = useGameStore(s => s.log);
-  const unlockedAchievements = useGameStore(s => s.unlockedAchievements);
-  const streaks = useGameStore(s => s.streaks);
-  const hardcoreMode = useGameStore(s => s.hardcoreMode);
-  const penalty = useGameStore(s => s.penalty);
-  const toggleHardcore = useGameStore(s => s.toggleHardcore);
-  const loadState = useGameStore(s => s.loadState);
+const mockCommunities: Community[] = [
+  {
+    id: '1',
+    name: 'Iron Warriors',
+    icon: '⚔️',
+    memberCount: 1243,
+    description: 'A community dedicated to strength training and physical excellence.',
+    isJoined: true,
+    type: 'public',
+  },
+  {
+    id: '2',
+    name: 'Mind Masters',
+    icon: '🧠',
+    memberCount: 2156,
+    description: 'Focus on cognitive growth, learning, and mental challenges.',
+    isJoined: false,
+    type: 'public',
+  },
+  {
+    id: '3',
+    name: 'Streak Lords',
+    icon: '🔥',
+    memberCount: 3421,
+    description: 'Build unstoppable daily habits and maintain epic streaks.',
+    isJoined: true,
+    type: 'public',
+  },
+  {
+    id: '4',
+    name: 'All-Rounders',
+    icon: '🌟',
+    memberCount: 892,
+    description: 'Balance life across all dimensions and master holistic growth.',
+    isJoined: false,
+    type: 'public',
+  },
+];
 
-  const totalLevel = getTotalLevel(skills);
-  const title = getTitle(totalLevel, hardcoreMode, penalty.tier);
-  const globalStreak = streaks.global.current;
-  const bestStreak = streaks.global.best;
-  const totalActions = log.length;
+export default function CommunitiesPage() {
+  const [communities, setCommunities] = useState<Community[]>(mockCommunities);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newCommunity, setNewCommunity] = useState({
+    name: '',
+    description: '',
+    isPrivate: false,
+  });
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const filteredCommunities = communities.filter((community) =>
+    community.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    community.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Get first letter of title for avatar
-  const avatarLetter = title.charAt(0).toUpperCase();
-
-  // Export game state as JSON
-  const handleExport = () => {
-    const gameState = {
-      skills,
-      log,
-      unlockedAchievements,
-      streaks,
-      hardcoreMode,
-      penalty,
-      timestamp: new Date().toISOString(),
-    };
-
-    const dataStr = JSON.stringify(gameState, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `lifequest-backup-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Import game state from JSON
-  const handleImport = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const content = event.target?.result as string;
-        const importedState = JSON.parse(content);
-
-        // Validate and load state
-        if (importedState.skills && importedState.log && importedState.unlockedAchievements) {
-          loadState(importedState);
-          alert('Game state imported successfully!');
-        } else {
-          alert('Invalid game state file. Please check the file format.');
-        }
-      } catch (err) {
-        alert('Failed to import game state. Please ensure the file is valid JSON.');
-      }
-    };
-    reader.readAsText(file);
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleCreateCommunity = () => {
+    if (newCommunity.name.trim()) {
+      const community: Community = {
+        id: String(communities.length + 1),
+        name: newCommunity.name,
+        icon: '✨',
+        memberCount: 1,
+        description: newCommunity.description || 'No description yet',
+        isJoined: true,
+        type: newCommunity.isPrivate ? 'private' : 'public',
+      };
+      setCommunities([...communities, community]);
+      setNewCommunity({ name: '', description: '', isPrivate: false });
+      setShowCreateModal(false);
     }
   };
 
-  if (profileSection === 'pictures') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setProfileSection('main')}
-            className="text-2xl hover:opacity-70 transition"
-          >
-            â
-          </button>
-          <h1 className="text-2xl font-bold">Progress Pictures</h1>
-        </div>
-        <div className="text-center py-12">
-          <div className="text-5xl mb-4 opacity-50">ð¸</div>
-          <p className="text-text-muted">Progress pictures feature coming soon</p>
-        </div>
-      </div>
+  const handleToggleJoin = (id: string) => {
+    setCommunities(
+      communities.map((c) =>
+        c.id === id ? { ...c, isJoined: !c.isJoined } : c
+      )
     );
-  }
-
-  if (profileSection === 'weight') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setProfileSection('main')}
-            className="text-2xl hover:opacity-70 transition"
-          >
-            â
-          </button>
-          <h1 className="text-2xl font-bold">Weight Log</h1>
-        </div>
-        <div className="text-center py-12">
-          <div className="text-5xl mb-4 opacity-50">âï¸</div>
-          <p className="text-text-muted">Weight log feature coming soon</p>
-        </div>
-      </div>
-    );
-  }
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
-      <div className="text-center pt-2">
-        {/* Avatar */}
-        <div className="flex justify-center mb-4">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-3xl font-bold text-bg-primary">
-            {avatarLetter}
+    <div className="min-h-screen bg-bg-primary text-text-primary">
+      {/* Navigation Tabs */}
+      <nav className="sticky top-0 z-40 border-b border-border-subtle bg-bg-primary/80 backdrop-blur">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8 py-4">
+            <Link
+              href="/social/feed"
+              className="text-text-secondary hover:text-text-primary transition"
+            >
+              Feed
+            </Link>
+            <Link
+              href="/social/communities"
+              className="border-b-2 border-accent-gold text-text-primary font-semibold"
+            >
+              Communities
+            </Link>
+            <Link
+              href="/social/challenges"
+              className="text-text-secondary hover:text-text-primary transition"
+            >
+              Challenges
+            </Link>
+            <Link
+              href="/social/friends"
+              className="text-text-secondary hover:text-text-primary transition"
+            >
+              Friends
+            </Link>
+            <Link
+              href="/social/leaderboard"
+              className="text-text-secondary hover:text-text-primary transition"
+            >
+              Leaderboard
+            </Link>
           </div>
         </div>
+      </nav>
 
-        {/* Title and Level */}
-        <h1 className="text-2xl font-bold mb-1">{title}</h1>
-        <p className="text-text-secondary text-sm">Total Level: {totalLevel}</p>
+      {/* Header */}
+      <div className="border-b border-border-subtle bg-bg-secondary/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-4xl font-bold">Communities</h1>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-6 py-2 bg-accent-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition"
+            >
+              Create
+            </button>
+          </div>
+
+          {/* Search Bar */}
+          <input
+            type="text"
+            placeholder="Search communities..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-bg-primary border border-border-subtle text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-gold transition"
+          />
+        </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="glass rounded-xl p-4 border border-border-subtle">
-          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Total Level</div>
-          <div className="text-3xl font-bold text-accent-gold">{totalLevel}</div>
-        </div>
-        <div className="glass rounded-xl p-4 border border-border-subtle">
-          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Global Streak</div>
-          <div className="text-3xl font-bold">{globalStreak} ð¥</dited-lg p-6 border border-border-subtle hover:border-accent-gold transition group"
+      {/* Communities Grid */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCommunities.map((community) => (
+            <div
+              key={community.id}
+              className="glass rounded-lg p-6 border border-border-subtle hover:border-accent-gold transition group"
             >
               {/* Header with Icon and Badge */}
               <div className="flex items-start justify-between mb-4">
@@ -173,7 +185,7 @@ export default function ProfilePage() {
 
               {/* Member Count */}
               <div className="flex items-center text-text-muted text-sm mb-4">
-                <span>ð¥ {community.memberCount.toLocaleString()} members</span>
+                <span>👥 {community.memberCount.toLocaleString()} members</span>
               </div>
 
               {/* Join/Joined Button */}

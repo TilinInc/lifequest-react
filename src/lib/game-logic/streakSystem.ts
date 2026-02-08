@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Streak System
+// LIFEQUEST — Streak System
 // Global + per-skill streaks with XP multiplier
 // ============================================
 
@@ -29,7 +29,7 @@ export function updateStreak(streak: StreakData): StreakData {
   }
 
   if (streak.lastActiveDate === yesterday) {
-    // Consecutive day â extend streak
+    // Consecutive day — extend streak
     const newCurrent = streak.current + 1;
     return {
       current: newCurrent,

@@ -18,7 +18,7 @@ const mockConversations: Conversation[] = [
   {
     id: '1',
     userId: 'user1',
-    avatar: 'ð¨',
+    avatar: '👨',
     username: 'AlexJ',
     lastMessage: 'Just completed the strength sprint! Great challenge.',
     timestamp: '2 hours ago',
@@ -27,7 +27,7 @@ const mockConversations: Conversation[] = [
   {
     id: '2',
     userId: 'user2',
-    avatar: 'ð©',
+    avatar: '👩',
     username: 'SarahM',
     lastMessage: 'Want to join the meditation challenge together?',
     timestamp: '5 hours ago',
@@ -36,7 +36,7 @@ const mockConversations: Conversation[] = [
   {
     id: '3',
     userId: 'user3',
-    avatar: 'ð¨',
+    avatar: '👨',
     username: 'MikeD',
     lastMessage: 'See you at the community meetup next week!',
     timestamp: '1 day ago',
@@ -72,7 +72,7 @@ export default function MessagesPage() {
         const newConversation: Conversation = {
           id: String(conversations.length + 1),
           userId: `user${conversations.length + 1}`,
-          avatar: 'ð¤',
+          avatar: '👤',
           username: selectedUsername,
           lastMessage: 'No messages yet',
           timestamp: 'now',
@@ -238,4 +238,36 @@ export default function MessagesPage() {
                     if (e.key === 'Enter') {
                       handleNewMessage();
                     }
-     ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` 
+                  }}
+                />
+              </div>
+
+              <p className="text-sm text-text-muted">
+                Start a direct message with any user in the community.
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <button
+                onClick={() => {
+                  setShowNewMessageModal(false);
+                  setSelectedUsername('');
+                }}
+                className="flex-1 px-4 py-2 bg-bg-tertiary border border-border-subtle text-text-primary font-semibold rounded-lg hover:bg-bg-secondary transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleNewMessage}
+                className="flex-1 px-4 py-2 bg-accent-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!selectedUsername.trim()}
+              >
+                Start Chat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Hardcore Mode & Penalty System
+// LIFEQUEST — Hardcore Mode & Penalty System
 // ============================================
 
 import { PenaltyState, PenaltyTier } from '../types';
@@ -26,13 +26,89 @@ export const PENALTY_CONFIG = {
   },
 };
 
-export function getDefaultPenalty): PenaltyState {
+export function getDefaultPenalty(): PenaltyState {
   return {
     tier: null,
-    consecutiveMisses: 0, 
+    consecutiveMisses: 0,
     penaltyZoneSurvived: 0,
     xpDecayed: 0,
     lastCheckDate: null,
     penaltyQuestActive: false,
+  };
+}
+
+export function getPenaltyTier(consecutiveMisses: number): PenaltyTier {
+  if (consecutiveMisses >= PENALTY_CONFIG.shadowExtractionThreshold) return 'critical';
+  if (consecutiveMisses >= PENALTY_CONFIG.penaltyZoneThreshold) return 'penaltyZone';
+  if (consecutiveMisses >= PENALTY_CONFIG.warningThreshold) return 'warning';
+  return null;
+}
+
+export function checkDailyPenalty(
+  penalty: PenaltyState,
+  todayActionCount: number,
+  hardcoreEnabled: boolean
+): PenaltyState {
+  if (!hardcoreEnabled) return getDefaultPenalty();
+
+  const today = todayStr();
+  if (penalty.lastCheckDate === today) return penalty;
+
+  // Check if yesterday met minimum actions
+  const missedYesterday = todayActionCount < PENALTY_CONFIG.dailyMinActions;
+
+  if (missedYesterday) {
+    const newMisses = penalty.consecutiveMisses + 1;
+    const newTier = getPenaltyTier(newMisses);
+    return {
+      ...penalty,
+      consecutiveMisses: newMisses,
+      tier: newTier,
+      lastCheckDate: today,
+      penaltyQuestActive: newTier === 'penaltyZone' || newTier === 'critical',
+    };
+  }
+
+  // Met requirement — reduce penalty
+  if (penalty.consecutiveMisses > 0) {
+    const newMisses = Math.max(0, penalty.consecutiveMisses - 1);
+    return {
+      ...penalty,
+      consecutiveMisses: newMisses,
+      tier: getPenaltyTier(newMisses),
+      lastCheckDate: today,
+      penaltyQuestActive: false,
+    };
+  }
+
+  return { ...penalty, lastCheckDate: today };
+}
+
+export function calculatePenaltyDecay(xp: number, tier: PenaltyTier): number {
+  if (!tier) return 0;
+  const rate = PENALTY_CONFIG.decayRates[tier] || 0;
+  return Math.max(50, Math.floor(xp * rate));
+}
+
+export function checkPenaltyEscape(
+  todayActionCount: number,
+  uniqueSkillsToday: number
+): boolean {
+  return (
+    todayActionCount >= PENALTY_CONFIG.escapeRequirements.actions ||
+    uniqueSkillsToday >= PENALTY_CONFIG.escapeRequirements.uniqueSkills
+  );
+}
+
+export function escapePenalty(penalty: PenaltyState): PenaltyState {
+  const reward = penalty.tier ? PENALTY_CONFIG.escapeRewards[penalty.tier] || 250 : 0;
+  return {
+    ...penalty,
+    tier: null,
+    consecutiveMisses: 0,
+    penaltyQuestActive: false,
+    penaltyZoneSurvived: penalty.tier === 'penaltyZone' || penalty.tier === 'critical'
+      ? penalty.penaltyZoneSurvived + 1
+      : penalty.penaltyZoneSurvived,
   };
 }

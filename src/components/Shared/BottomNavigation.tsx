@@ -5,11 +5,11 @@ import { usePathname } from 'next/navigation';
 import { useSocialStore } from '@/store/useSocialStore';
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Home', icon: 'ð ', href: '/dashboard' },
-  { id: 'quests', label: 'Quests', icon: 'ð', href: '/dashboard/quests' },
-  { id: 'social', label: 'Social', icon: 'ð¥', href: '/social/feed' },
-  { id: 'achievements', label: 'Awards', icon: 'ð', href: '/dashboard/achievements' },
-  { id: 'profile', label: 'Profile', icon: 'ð¤', href: '/dashboard/profile' },
+  { id: 'dashboard', label: 'Home', icon: '🏠', href: '/dashboard' },
+  { id: 'quests', label: 'Quests', icon: '📜', href: '/dashboard/quests' },
+  { id: 'social', label: 'Social', icon: '👥', href: '/social/feed' },
+  { id: 'achievements', label: 'Awards', icon: '🏆', href: '/dashboard/achievements' },
+  { id: 'profile', label: 'Profile', icon: '👤', href: '/dashboard/profile' },
 ];
 
 export default function BottomNavigation() {
@@ -49,5 +49,5 @@ export default function BottomNavigation() {
         })}
       </div>
     </nav>
-  
-($
+  );
+}

@@ -1,5 +1,5 @@
 -- ============================================
--- LIFEQUEST â Database Schema
+-- LIFEQUEST — Database Schema
 -- Supabase PostgreSQL Migration
 -- ============================================
 
@@ -93,7 +93,7 @@ CREATE TABLE penalty_state (
   consecutive_misses INT DEFAULT 0,
   penalty_zone_survived INT DEFAULT 0,
   xp_decayed BIGINT DEFAULT 0,
-  last_check_date DATE, 
+  last_check_date DATE,
   penalty_quest_active BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -111,7 +111,7 @@ CREATE TABLE todos (
   reset_date DATE NOT NULL DEFAULT CURRENT_DATE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-CREATE INDEX idx_todos user_date ON todos(user_id, reset_date);
+CREATE INDEX idx_todos_user_date ON todos(user_id, reset_date);
 
 -- Progress pictures
 CREATE TABLE progress_pictures (
@@ -157,7 +157,7 @@ CREATE TABLE decay_logs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ===========================================
+-- ============================================
 -- SOCIAL TABLES
 -- ============================================
 
@@ -296,7 +296,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger: auto-init on signap
+-- Trigger: auto-init on signup
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION init_user_game_state();

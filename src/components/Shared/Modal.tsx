@@ -36,7 +36,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
         {title && (
           <div className="sticky top-0 flex items-center justify-between px-5 py-4 border-b border-border-subtle bg-bg-secondary/95 backdrop-blur-sm rounded-t-2xl">
             <h2 className="font-bold text-lg">{title}</h2>
-            <button onClick={onClose} className="text-text-muted hover:text-text-primary text-xl p-1">â</button>
+            <button onClick={onClose} className="text-text-muted hover:text-text-primary text-xl p-1">✕</button>
           </div>
         )}
         <div className="p-5">{children}</div>

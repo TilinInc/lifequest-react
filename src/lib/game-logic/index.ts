@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Game Logic barrel export
+// LIFEQUEST — Game Logic barrel export
 // ============================================
 
 export * from './levelSystem';

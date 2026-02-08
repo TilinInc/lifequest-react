@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST â Skill Definitions
+// LIFEQUEST — Skill Definitions
 // All 7 skills with their actions
 // ============================================
 
@@ -9,7 +9,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'strength',
     name: 'Strength',
-    icon: 'ðª',
+    icon: '💪',
     color: '#EF4444',
     desc: 'Lifting, physical training, raw power',
     actions: [
@@ -22,7 +22,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'endurance',
     name: 'Endurance',
-    icon: 'ð',
+    icon: '🏃',
     color: '#F59E0B',
     desc: 'Cardio, consistency, stamina',
     actions: [
@@ -35,7 +35,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'discipline',
     name: 'Discipline',
-    icon: 'âï¸',
+    icon: '⚔️',
     color: '#8B5CF6',
     desc: 'Habits, streaks, routines',
     actions: [
@@ -49,7 +49,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'intellect',
     name: 'Intellect',
-    icon: 'ð§ ',
+    icon: '🧠',
     color: '#3B82F6',
     desc: 'Studying, reading, learning',
     actions: [
@@ -65,7 +65,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'social',
     name: 'Social',
-    icon: 'ð¥',
+    icon: '👥',
     color: '#EC4899',
     desc: 'Conversations, networking, dating',
     actions: [
@@ -78,7 +78,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'mind',
     name: 'Mind',
-    icon: 'ð§',
+    icon: '🧘',
     color: '#14B8A6',
     desc: 'Meditation, faith, emotional regulation',
     actions: [
@@ -93,7 +93,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
   {
     id: 'durability',
     name: 'Durability',
-    icon: 'ð¡ï¸',
+    icon: '🛡️',
     color: '#6366F1',
     desc: 'Sleep, recovery, health upkeep',
     actions: [

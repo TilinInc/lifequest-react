@@ -1,5 +1,5 @@
 -- ============================================
--- LIFEQUEST â Row-Level Security Policies
+-- LIFEQUEST — Row-Level Security Policies
 -- ============================================
 
 -- Profiles
@@ -11,7 +11,7 @@ CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (
 -- Skills
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read own skills" ON skills FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Public skills readable" ON skills FOR SELECT USINF (
+CREATE POLICY "Public skills readable" ON skills FOR SELECT USING (
   EXISTS (SELECT 1 FROM profiles WHERE id = skills.user_id AND is_public = true)
 );
 CREATE POLICY "Users can manage own skills" ON skills FOR ALL USING (auth.uid() = user_id);
@@ -28,7 +28,7 @@ CREATE POLICY "Users can manage own streaks" ON streaks FOR ALL USING (auth.uid(
 -- Achievements
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read own achievements" ON achievements FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Public achievements readable" ON achievements FOR SELECT USINF (
+CREATE POLICY "Public achievements readable" ON achievements FOR SELECT USING (
   EXISTS (SELECT 1 FROM profiles WHERE id = achievements.user_id AND is_public = true)
 );
 CREATE POLICY "Users can insert own achievements" ON achievements FOR INSERT WITH CHECK (auth.uid() = user_id);

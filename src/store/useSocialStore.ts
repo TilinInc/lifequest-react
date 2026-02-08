@@ -1,9 +1,9 @@
 // ============================================
-// LIFEQUEST â Social State Store (Zustand)
+// LIFEQUEST — Social State Store (Zustand)
 // ============================================
 
 import { create } from 'zustand';
-import { UserProfile, Friendship, Community, ActivityItem, Notification, Message, SocialChallenge } from 'A/lib/types';
+import { UserProfile, Friendship, Community, ActivityItem, Notification, Message, SocialChallenge } from '@/lib/types';
 
 interface SocialStore {
   // Friends
@@ -93,13 +93,13 @@ export const useSocialStore = create<SocialStore>((set, get) => ({
   conversations: {},
   setConversation: (partnerId, messages) => set(s => ({
     conversations: { ...s.conversations, [partnerId]: messages },
-  }),
+  })),
   addMessage: (partnerId, message) => set(s => ({
-    conversations: { 
+    conversations: {
       ...s.conversations,
       [partnerId]: [...(s.conversations[partnerId] || []), message],
     },
-  }),
+  })),
 
   challenges: [],
   setChallenges: (challenges) => set({ challenges }),

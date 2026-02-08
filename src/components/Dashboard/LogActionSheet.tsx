@@ -2,8 +2,8 @@
 
 import { useGameStore } from '@/store/useGameStore';
 import { useUIStore } from '@/store/useUIStore';
-import { SKILL_DEFS } from 'A/lib/game-logic/skillSystem';
-import { getLevel } from 'A/lib/game-logic/levelSystem';
+import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
+import { getLevel } from '@/lib/game-logic/levelSystem';
 import Modal from '@/components/Shared/Modal';
 
 export default function LogActionSheet() {
@@ -15,18 +15,18 @@ export default function LogActionSheet() {
 
   const handleLog = (skillId: string, actionId: string, actionName: string, xp: number) => {
     const result = logAction(skillId as any, actionId, actionName, xp);
-    showToast(`+${result.xpEarned} XP â ${actionName}`, 'xp');
+    showToast(`+${result.xpEarned} XP — ${actionName}`, 'xp');
 
     if (result.leveledUp) {
       showLevelUpModal(skillId, result.newLevel);
     }
 
     if (result.newAchievements.length > 0) {
-      setTimeout(() => showToast(`ð Achievement Unlocked!`, 'success'), 500);
+      setTimeout(() => showToast(`🏆 Achievement Unlocked!`, 'success'), 500);
     }
 
     if (result.questsCompleted.length > 0) {
-      setTimeout(() => showToast(`ð Quest Completed!`, 'success'), 800);
+      setTimeout(() => showToast(`📜 Quest Completed!`, 'success'), 800);
     }
 
     closeLogSheet();

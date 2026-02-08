@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from 'A/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-bg-primary">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-4xl mb-2">âï¸</div>
+          <div className="text-4xl mb-2">⚔️</div>
           <h1 className="text-2xl font-bold">Welcome Back, Warrior</h1>
           <p className="text-text-secondary mt-1">Continue your quest</p>
         </div>
@@ -69,7 +69,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-bg-secondary border border-border-subtle focus:border-accent-gold focus:outline-none transition-colors"
-              placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+              placeholder="••••••••"
               required
             />
           </div>
@@ -112,5 +112,5 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
-  (æ}
+  );
 }
