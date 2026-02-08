@@ -38,8 +38,22 @@ export default function FriendsPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Use mock data if store data is empty
-  const friendsList = friends && friends.length > 0 ? friends : mockFriends;
-  const requestsList = friendRequests && friendRequests.length > 0 ? friendRequests : mockRequests;
+  const friendsList: Friend[] = friends && friends.length > 0
+    ? friends.map(f => ({
+        id: f.id,
+        username: f.profile?.username || 'Unknown',
+        avatar: f.profile?.username?.[0]?.toUpperCase() || '?',
+        totalLevel: 0,
+      }))
+    : mockFriends;
+  const requestsList: FriendRequest[] = friendRequests && friendRequests.length > 0
+    ? friendRequests.map(r => ({
+        id: r.id,
+        username: r.profile?.username || 'Unknown',
+        avatar: r.profile?.username?.[0]?.toUpperCase() || '?',
+        userId: r.requesterId,
+      }))
+    : mockRequests;
 
   // Filter friends based on search
   const filteredFriends = friendsList.filter((friend) =>
