@@ -81,7 +81,17 @@ export default function FeedPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Use mock data if activityFeed is empty
-  const activities = activityFeed && activityFeed.length > 0 ? activityFeed : mockActivities;
+  const activities: Activity[] = activityFeed && activityFeed.length > 0
+    ? activityFeed.map(item => ({
+        id: item.id,
+        userId: item.userId,
+        username: item.profile?.username || 'Unknown',
+        userAvatar: item.profile?.avatarUrl || '',
+        type: item.activityType as Activity['type'],
+        description: item.metadata?.description || '',
+        timestamp: new Date(item.createdAt),
+      }))
+    : mockActivities;
 
   // Filter activities based on selected filter
   const filteredActivities = activities.filter((activity) => {
