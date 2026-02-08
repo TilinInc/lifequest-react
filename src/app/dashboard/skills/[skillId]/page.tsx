@@ -8,6 +8,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getLevel, getXpProgress, getXpToNext, getSkillTitle } from '@/lib/game-logic/levelSystem';
 import { SKILL_DEFS, getSkillDef } from '@/lib/game-logic/skillSystem';
 import { todayStr } from '@/lib/game-logic/questSystem';
+import { SkillId } from '@/lib/types';
 import ProgressBar from '@/components/Shared/ProgressBar';
 
 export default function SkillDetailPage() {
@@ -58,7 +59,7 @@ export default function SkillDetailPage() {
 
   // Handle action logging
   const handleLogAction = (actionId: string, actionName: string, baseXp: number) => {
-    const result = logAction(skillId, actionId, actionName, baseXp);
+    const result = logAction(skillId as SkillId, actionId, actionName, baseXp);
     showToast(`+${result.xpEarned} XP from ${actionName}`, 'xp');
     if (result.leveledUp) {
       showToast(`${skillDef.name} Level ${result.newLevel}!`, 'success');
