@@ -43,7 +43,7 @@ export interface ActionLogEntry {
 export interface StreakData {
   current: number;
   best: number;
-  lastActiveDate: string | null;
+  lastActiveDate: string | null; // YYYY-MM-DD
 }
 
 // --- Quests ---
@@ -91,7 +91,7 @@ export type PenaltyTier = 'warning' | 'penaltyZone' | 'critical' | null;
 export interface PenaltyState {
   tier: PenaltyTier;
   consecutiveMisses: number;
-  penaltyZooneSurvived: number;
+  penaltyZoneSurvived: number;
   xpDecayed: number;
   lastCheckDate: string | null;
   penaltyQuestActive: boolean;
