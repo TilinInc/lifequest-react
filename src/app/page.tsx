@@ -28,6 +28,12 @@ export default function LandingPage() {
           >
             Continue Journey
           </Link>
+          <Link
+            href="/dashboard?guest=true"
+            className="px-8 py-3 rounded-xl border border-border-subtle text-text-secondary font-medium text-lg hover:bg-bg-hover hover:text-text-primary transition-all opacity-75 hover:opacity-100"
+          >
+            👁️ Play as Guest
+          </Link>
         </div>
       </div>
 
