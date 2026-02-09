@@ -2,10 +2,11 @@
 
 import { useGameStore } from '@/store/useGameStore';
 import { useUIStore } from '@/store/useUIStore';
-import { getLevel, getXpProgress, getTitle, getTotalLevel, getSkillTitle } from '@/lib/game-logic/levelSystem';
+import { getLevel, getXpProgress, getTitle, getTotalLevel, getSkillTitle, getTitleWithImage } from '@/lib/game-logic/levelSystem';
 import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 import { getDailyQuests, getQuestProgress, todayStr } from '@/lib/game-logic/questSystem';
 import { useAuth } from '@/hooks/useAuth';
+import { getMoneyLevel, getMoneyTitle, getMoneyProgress, formatMoney } from '@/lib/game-logic/levelSystem';
 import ProgressBar from '@/components/Shared/ProgressBar';
 import SkillCard from '@/components/Dashboard/SkillCard';
 import LogActionSheet from '@/components/Dashboard/LogActionSheet';
@@ -17,19 +18,25 @@ export default function DashboardPage() {
   const streaks = useGameStore(s => s.streaks);
   const hardcoreMode = useGameStore(s => s.hardcoreMode);
   const penalty = useGameStore(s => s.penalty);
+  const moneyLog = useGameStore(s => s.moneyLog);
   const showLogSheet = useUIStore(s => s.showLogSheet);
   const openLogSheet = useUIStore(s => s.openLogSheet);
   const { isGuest } = useAuth();
 
-  const totalLevel = getTotalLevel(skills);
-  const title = getTitle(totalLevel, hardcoreMode, penalty.tier);
+  // Exclude money from regular skill calculations
+  const regularSkills = skills.filter(s => s.id !== 'money');
+  const totalLevel = getTotalLevel(regularSkills);
+  const moneyLevel = getMoneyLevel(moneyLog.currentNetWorth);
+  const moneyTitle = getMoneyTitle(moneyLog.currentNetWorth);
+  const moneyProgress = getMoneyProgress(moneyLog.currentNetWorth);
+  const { title, img } = getTitleWithImage(totalLevel, hardcoreMode, penalty.tier);
   const globalStreak = streaks.global.current;
 
-  // Today's action count
+  // Today\'s action count
   const today = todayStr();
   const todayLog = log.filter(l => {
     const d = new Date(l.timestamp);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` === today;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,\'0\')}-${String(d.getDate()).padStart(2,\'0\')}` === today;
   });
 
   // Daily quests preview
@@ -59,7 +66,14 @@ export default function DashboardPage() {
 
       {/* Header */}
       <div className="text-center pt-2">
-        <div className="text-3xl mb-1">⚔️</div>
+        <img
+          src={img}
+          className="w-10 h-10 inline-block mb-2"
+          style={{
+            filter: \'invert(78%) sepia(61%) saturate(588%) hue-rotate(2deg) brightness(103%) contrast(104%)\',
+          }}
+          alt="Title icon"
+        />
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-text-secondary text-sm">
           Level {totalLevel}
@@ -67,11 +81,11 @@ export default function DashboardPage() {
         </p>
         {hardcoreMode && penalty.tier && (
           <div className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold ${
-            penalty.tier === 'critical' ? 'bg-red-500/20 text-red-400' :
-            penalty.tier === 'penaltyZone' ? 'bg-orange-500/20 text-orange-400' :
-            'bg-yellow-500/20 text-yellow-400'
+            penalty.tier === \'critical\' ? \'bg-red-500/20 text-red-400\' :
+            penalty.tier === \'penaltyZone\' ? \'bg-orange-500/20 text-orange-400\' :
+            \'bg-yellow-500/20 text-yellow-400\'
           }`}>
-            {penalty.tier === 'critical' ? '💀 CRITICAL' : penalty.tier === 'penaltyZone' ? '⚠️ PENALTY ZONE' : '⚡ WARNING'}
+            {penalty.tier === \'critical\' ? \'💀 CRITICAL\' : penalty.tier === \'penaltyZone\' ? \'⚠️ PENALTY ZONE\' : \'⚡ WARNING\'}
           </div>
         )}
       </div>
@@ -87,7 +101,7 @@ export default function DashboardPage() {
           <div className="text-[10px] text-text-muted">Quests</div>
         </div>
         <div className="glass rounded-xl p-3 text-center border border-border-subtle">
-          <div className="text-xl font-bold">{globalStreak > 0 ? `+${Math.min(globalStreak * 10, 50)}%` : '0%'}</div>
+          <div className="text-xl font-bold">{globalStreak > 0 ? `+${Math.min(globalStreak * 10, 50)}%` : \'0%\'}</div>
           <div className="text-[10px] text-text-muted">Streak Bonus</div>
         </div>
       </div>
@@ -99,7 +113,7 @@ export default function DashboardPage() {
           <Link href="/dashboard/skills" className="text-accent-gold text-sm">View All →</Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {SKILL_DEFS.map(def => {
+          {SKILL_DEFS.filter(def => def.id !== \'money\').map(def => {
             const skill = skills.find(s => s.id === def.id);
             const xp = skill?.xp || 0;
             const level = getLevel(xp);
@@ -117,12 +131,26 @@ export default function DashboardPage() {
             );
           })}
         </div>
+
+        {/* Money Card - Special Category */}
+        <Link href="/dashboard/money" className="block mt-3 glass rounded-xl p-4 border border-border-subtle hover:border-green-500/30 transition-all group">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-2xl">💰</span>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ color: \'#22C55E\', background: \'#22C55E15\' }}>
+              Lv.{moneyLevel}
+            </span>
+          </div>
+          <h3 className="font-bold text-sm mb-0.5">Money</h3>
+          <p className="text-[10px] text-text-muted mb-1">{moneyTitle}</p>
+          <p className="text-xs font-medium mb-2" style={{ color: \'#22C55E\' }}>{formatMoney(moneyLog.currentNetWorth)}</p>
+          <ProgressBar progress={moneyProgress} color="#22C55E" height={4} />
+        </Link>
       </div>
 
       {/* Recent Activity */}
       {todayLog.length > 0 && (
         <div>
-          <h2 className="font-bold text-lg mb-3">Today's Activity</h2>
+          <h2 className="font-bold text-lg mb-3">Today\'s Activity</h2>
           <div className="space-y-2">
             {todayLog.slice(0, 5).map(entry => {
               const skillDef = SKILL_DEFS.find(s => s.id === entry.skillId);
