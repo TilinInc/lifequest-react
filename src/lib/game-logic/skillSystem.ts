@@ -1,6 +1,6 @@
 // ============================================
-// LIFEQUEST — Skill Definitions
-// All 7 skills with their actions
+// LIFEQUEST - Skill Definitions
+// All 7 skills + Money category with updated colors
 // ============================================
 
 import { SkillDefinition } from '../types';
@@ -10,7 +10,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'strength',
     name: 'Strength',
     icon: '💪',
-    color: '#EF4444',
+    color: '#EF4444', // Red - physical power
     desc: 'Lifting, physical training, raw power',
     actions: [
       { id: 'gym', name: 'Gym Session', xp: 75, desc: 'Hit the weights' },
@@ -23,7 +23,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'endurance',
     name: 'Endurance',
     icon: '🏃',
-    color: '#F59E0B',
+    color: '#F97316', // Orange - closer to red on color wheel
     desc: 'Cardio, consistency, stamina',
     actions: [
       { id: 'run_30', name: 'Run 30min', xp: 60, desc: '30 minute run' },
@@ -36,7 +36,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'discipline',
     name: 'Discipline',
     icon: '⚔️',
-    color: '#8B5CF6',
+    color: '#EAB308', // Yellow/Gold - golden willpower
     desc: 'Habits, streaks, routines',
     actions: [
       { id: 'early_bird', name: 'Early Bird', xp: 30, desc: 'Wake up early' },
@@ -50,7 +50,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'intellect',
     name: 'Intellect',
     icon: '🧠',
-    color: '#3B82F6',
+    color: '#3B82F6', // Blue - mental/brain
     desc: 'Studying, reading, learning',
     actions: [
       { id: 'reading_30', name: 'Reading 30min', xp: 40, desc: '30 minutes of reading' },
@@ -66,7 +66,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'social',
     name: 'Social',
     icon: '👥',
-    color: '#EC4899',
+    color: '#EC4899', // Pink - social/heart
     desc: 'Conversations, networking, dating',
     actions: [
       { id: 'whatsapp', name: 'WhatsApp Friend', xp: 50, desc: 'Messaged a friend' },
@@ -79,7 +79,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'mind',
     name: 'Mind',
     icon: '🧘',
-    color: '#14B8A6',
+    color: '#8B5CF6', // Purple - spiritual/mind
     desc: 'Meditation, faith, emotional regulation',
     actions: [
       { id: 'meditation', name: 'Meditation 15min', xp: 50, desc: '15 minutes of meditation' },
@@ -94,7 +94,7 @@ export const SKILL_DEFS: SkillDefinition[] = [
     id: 'durability',
     name: 'Durability',
     icon: '🛡️',
-    color: '#6366F1',
+    color: '#14B8A6', // Teal - health/healing
     desc: 'Sleep, recovery, health upkeep',
     actions: [
       { id: 'sleep_7hr', name: '7hr Sleep', xp: 70, desc: 'Got 7+ hours of sleep' },
@@ -102,6 +102,14 @@ export const SKILL_DEFS: SkillDefinition[] = [
       { id: 'cold_sauna', name: 'Cold Shower / Sauna', xp: 40, desc: 'Recovery session' },
       { id: 'stretching', name: 'Stretching / Mobility', xp: 30, desc: 'Flexibility work' },
     ],
+  },
+  {
+    id: 'money',
+    name: 'Money',
+    icon: '💰',
+    color: '#22C55E', // Green - money green
+    desc: 'Net worth tracking, financial growth',
+    actions: [], // No actions - levels based on net worth input
   },
 ];
 
