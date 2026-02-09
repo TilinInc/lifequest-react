@@ -1,9 +1,9 @@
 // ============================================
-// LIFEQUEST — Type Definitions
+// LIFEQUEST - Type Definitions
 // ============================================
 
 // --- Skills ---
-export type SkillId = 'strength' | 'endurance' | 'discipline' | 'intellect' | 'social' | 'mind' | 'durability';
+export type SkillId = 'strength' | 'endurance' | 'discipline' | 'intellect' | 'social' | 'mind' | 'durability' | 'money';
 
 export interface SkillAction {
   id: string;
@@ -37,6 +37,15 @@ export interface ActionLogEntry {
   baseXp: number;
   streakBonus: number;
   timestamp: number;
+}
+
+// --- Money Log ---
+export interface MoneyEntry {
+  id: string;
+  timestamp: number;
+  dateStr: string;
+  netWorth: number;
+  note?: string;
 }
 
 // --- Streaks ---
@@ -159,6 +168,10 @@ export interface GameState {
   todos: TodoState;
   progressPictures: { uploads: ProgressPicture[] };
   weightLog: { entries: WeightEntry[] };
+  moneyLog: {
+    entries: MoneyEntry[];
+    currentNetWorth: number;
+  };
   createdAt: number;
 }
 
