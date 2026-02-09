@@ -255,13 +255,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return { decayed: false, losses: [] };
     }
 
-    // Apply decay
+    // Apply decay with protection against dropping below level 1
     const losses: { skillId: string; amount: number }[] = [];
     const newSkills = state.skills.map(s => {
       if (s.xp <= 0) return s;
       const amount = getDecayAmount(s.xp);
       losses.push({ skillId: s.id, amount });
-      return { ...s, xp: Math.max(0, s.xp - amount) };
+
+      // Calculate the new XP after decay, but never allow it to go negative
+      const newXp = Math.max(0, s.xp - amount);
+
+      return { ...s, xp: newXp };
     });
 
     set({ skills: newSkills, lastDecayDate: today });
