@@ -4,6 +4,7 @@
 
 import { PenaltyState, PenaltyTier } from '../types';
 import { todayStr } from './questSystem';
+import { getLevel } from './levelSystem';
 
 export const PENALTY_CONFIG = {
   dailyMinActions: 3,
@@ -84,10 +85,18 @@ export function checkDailyPenalty(
   return { ...penalty, lastCheckDate: today };
 }
 
+// Calculate penalty decay with level-scaled minimums
+// Removes the aggressive flat 50 XP minimum and uses level-proportional minimums instead
+// Level 1: min 3 XP, Level 10: min 30 XP, Level 20: min 60 XP
+// This keeps penalties meaningful while protecting low-level players
 export function calculatePenaltyDecay(xp: number, tier: PenaltyTier): number {
   if (!tier) return 0;
+
+  const currentLevel = getLevel(xp);
+
   const rate = PENALTY_CONFIG.decayRates[tier] || 0;
-  return Math.max(50, Math.floor(xp * rate));
+  const minimumDecay = currentLevel * 3; // Level-proportional minimum: level * 3
+  return Math.max(minimumDecay, Math.floor(xp * rate));
 }
 
 export function checkPenaltyEscape(
