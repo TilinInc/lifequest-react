@@ -5,6 +5,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getLevel, getXpProgress, getTitle, getTotalLevel, getSkillTitle } from '@/lib/game-logic/levelSystem';
 import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 import { getDailyQuests, getQuestProgress, todayStr } from '@/lib/game-logic/questSystem';
+import { useAuth } from '@/hooks/useAuth';
 import ProgressBar from '@/components/Shared/ProgressBar';
 import SkillCard from '@/components/Dashboard/SkillCard';
 import LogActionSheet from '@/components/Dashboard/LogActionSheet';
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const penalty = useGameStore(s => s.penalty);
   const showLogSheet = useUIStore(s => s.showLogSheet);
   const openLogSheet = useUIStore(s => s.openLogSheet);
+  const { isGuest } = useAuth();
 
   const totalLevel = getTotalLevel(skills);
   const title = getTitle(totalLevel, hardcoreMode, penalty.tier);
@@ -36,6 +38,25 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Guest Mode Banner */}
+      {isGuest && (
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-lg">👁️</span>
+            <div>
+              <p className="text-sm font-medium text-blue-200">Playing as Guest</p>
+              <p className="text-xs text-blue-300">Your progress is saved locally and will be lost if you clear your browser data</p>
+            </div>
+          </div>
+          <Link
+            href="/auth/signup"
+            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors whitespace-nowrap"
+          >
+            Sign Up to Save
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="text-center pt-2">
         <div className="text-3xl mb-1">⚔️</div>
