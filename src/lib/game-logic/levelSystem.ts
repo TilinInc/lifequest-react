@@ -1,5 +1,5 @@
 // ============================================
-// LIFEQUEST — Level & XP System
+// LIFEQUEST - Level & XP System
 // Exact port of original game mechanics
 // ============================================
 
@@ -60,28 +60,29 @@ export function getDecayAmount(xp: number): number {
   return Math.max(minimumDecay, Math.floor(xp * 0.05));
 }
 
-// --- Global Titles (original witty progression) ---
-const GLOBAL_TITLES: [number, string][] = [
-  [0, 'Absolute Loser'],
-  [7, 'Absolute Loser'],
-  [14, 'Wimp'],
-  [28, "Bully's Dream"],
-  [49, 'Girl Turnoff'],
-  [70, 'Noob'],
-  [105, 'Girlfriend Still Cheating On You'],
-  [150, 'Average Joe'],
-  [200, 'Mr. Locked In'],
-  [260, 'Not So Average Joe'],
-  [320, 'Above Average Joe'],
-  [380, 'Superstar'],
-  [430, 'Himothy'],
-  [480, 'Elite Human'],
-  [530, 'Super Human'],
-  [580, 'Giga Human'],
-  [630, 'Enlightened'],
-  [660, 'Transcendent'],
-  [680, 'Ascended Being'],
-  [693, 'The One'],
+// --- Global Titles (original witty progression with images) ---
+const GI = 'https://cdn.jsdelivr.net/gh/game-icons/icons@master/';
+const GLOBAL_TITLES: [number, string, string][] = [
+  [0, 'Absolute Loser', GI+'lorc/despair.svg'],
+  [7, 'Absolute Loser', GI+'lorc/despair.svg'],
+  [14, 'Wimp', GI+'lorc/broken-shield.svg'],
+  [28, "Bully's Dream", GI+'lorc/pummeled.svg'],
+  [49, 'Girl Turnoff', GI+'lorc/broken-heart.svg'],
+  [70, 'Noob', GI+'lorc/wooden-sign.svg'],
+  [105, 'Girlfriend Still Cheating On You', GI+'delapouite/shrug.svg'],
+  [150, 'Average Joe', GI+'delapouite/person.svg'],
+  [200, 'Mr. Locked In', GI+'lorc/padlock.svg'],
+  [260, 'Not So Average Joe', GI+'lorc/muscle-up.svg'],
+  [320, 'Above Average Joe', GI+'lorc/sword-clash.svg'],
+  [380, 'Superstar', GI+'lorc/crown.svg'],
+  [430, 'Himothy', GI+'lorc/crowned-skull.svg'],
+  [480, 'Elite Human', GI+'lorc/winged-shield.svg'],
+  [530, 'Super Human', GI+'lorc/bolt-shield.svg'],
+  [580, 'Giga Human', GI+'lorc/sunbeams.svg'],
+  [630, 'Enlightened', GI+'lorc/meditation.svg'],
+  [660, 'Transcendent', GI+'lorc/angel-wings.svg'],
+  [680, 'Ascended Being', GI+'lorc/holy-grail.svg'],
+  [693, 'The One', GI+'lorc/all-for-one.svg'],
 ];
 
 export function getTitle(totalLevel: number, hardcoreMode: boolean = false, penaltyTier: string | null = null): string {
@@ -93,6 +94,21 @@ export function getTitle(totalLevel: number, hardcoreMode: boolean = false, pena
     if (totalLevel >= threshold) title = t;
   }
   return title;
+}
+
+export function getTitleWithImage(totalLevel: number, hardcoreMode: boolean = false, penaltyTier: string | null = null): { title: string; img: string } {
+  if (hardcoreMode && penaltyTier === 'critical') return { title: 'Condemned', img: GI+'lorc/death-zone.svg' };
+  if (hardcoreMode && penaltyTier === 'penaltyZone') return { title: 'Punished', img: GI+'lorc/cage.svg' };
+
+  let title = 'Absolute Loser';
+  let img = GI+'lorc/despair.svg';
+  for (const [threshold, t, i] of GLOBAL_TITLES) {
+    if (totalLevel >= threshold) {
+      title = t;
+      img = i;
+    }
+  }
+  return { title, img };
 }
 
 // --- Per-Skill Titles (original witty progression) ---
@@ -114,6 +130,66 @@ export function getSkillTitle(skillId: string, level: number): string {
     if (level >= threshold) title = t;
   }
   return title;
+}
+
+// --- Money Category (Net Worth-Based Levels) ---
+const MONEY_THRESHOLDS: [number, string, number][] = [
+  [0, 'Dead Broke', 1],
+  [1000, 'Couch Cushion Digger', 2],
+  [5000, 'Ramen Budget Elite', 3],
+  [10000, 'Five Figure Fraud', 5],
+  [25000, 'Emergency Fund Haver', 8],
+  [50000, 'Half-Stack Hero', 12],
+  [75000, "Parents Aren't Embarrassed", 16],
+  [100000, 'Six Figure Starter', 20],
+  [150000, 'Adulting Successfully', 25],
+  [250000, 'Quarter Millionaire Flex', 30],
+  [500000, 'Half a Milli', 40],
+  [750000, 'Almost There...', 50],
+  [1000000, 'Millionaire', 60],
+  [2500000, 'Multi-Millionaire', 70],
+  [5000000, 'Stupid Rich', 75],
+  [10000000, 'Eight Figure Energy', 80],
+  [25000000, 'Private Jet Adjacent', 85],
+  [50000000, 'Generational Wealth', 90],
+  [100000000, 'Hundred Millionaire', 95],
+  [1000000000, 'Billionaire', 99],
+];
+
+export function getMoneyLevel(netWorth: number): number {
+  let level = 1;
+  for (const [threshold, , lvl] of MONEY_THRESHOLDS) {
+    if (netWorth >= threshold) level = lvl;
+  }
+  return level;
+}
+
+export function getMoneyTitle(netWorth: number): string {
+  let title = 'Dead Broke';
+  for (const [threshold, t] of MONEY_THRESHOLDS) {
+    if (netWorth >= threshold) title = t;
+  }
+  return title;
+}
+
+export function getMoneyProgress(netWorth: number): number {
+  let currentThreshold = 0;
+  let nextThreshold = 1000;
+  for (let i = 0; i < MONEY_THRESHOLDS.length; i++) {
+    if (netWorth >= MONEY_THRESHOLDS[i][0]) {
+      currentThreshold = MONEY_THRESHOLDS[i][0];
+      nextThreshold = i + 1 < MONEY_THRESHOLDS.length ? MONEY_THRESHOLDS[i + 1][0] : MONEY_THRESHOLDS[i][0];
+    }
+  }
+  if (currentThreshold === nextThreshold) return 1;
+  return (netWorth - currentThreshold) / (nextThreshold - currentThreshold);
+}
+
+export function formatMoney(amount: number): string {
+  if (amount >= 1000000000) return `$${(amount / 1000000000).toFixed(1)}B`;
+  if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+  if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}K`;
+  return `$${amount.toLocaleString()}`;
 }
 
 export { MAX_LEVEL, XP_TABLE };
