@@ -1,10 +1,10 @@
 // ============================================
-// LIFEQUEST — Game State Store (Zustand)
+// LIFEQUEST - Game State Store (Zustand)
 // ============================================
 
 import { create } from 'zustand';
-import { SkillState, ActionLogEntry, StreakData, PenaltyState, QuestCompletion, TodoItem, SkillId } from '@/lib/types';
-import { getLevel, getTotalLevel, getTitle, getStreakMultiplier, getDecayAmount } from '@/lib/game-logic/levelSystem';
+import { SkillState, ActionLogEntry, StreakData, PenaltyState, QuestCompletion, TodoItem, SkillId, MoneyEntry } from '@/lib/types';
+import { getLevel, getTotalLevel, getTitle, getStreakMultiplier, getDecayAmount, getMoneyLevel } from '@/lib/game-logic/levelSystem';
 import { getDefaultSkills, SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 import { getDailyQuests, getWeeklyQuests, getQuestProgress, isQuestComplete, todayStr, getWeekKey } from '@/lib/game-logic/questSystem';
 import { checkAchievements, getAchievement, ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
@@ -23,6 +23,10 @@ interface GameStore {
   completedQuests: QuestCompletion;
   todos: { lastResetDate: string; items: TodoItem[] };
   lastDecayDate: string | null;
+  moneyLog: {
+    entries: MoneyEntry[];
+    currentNetWorth: number;
+  };
 
   // Computed
   totalLevel: () => number;
@@ -36,6 +40,11 @@ interface GameStore {
     newLevel: number;
     newAchievements: string[];
     questsCompleted: string[];
+  };
+  logNetWorth: (netWorth: number, note?: string) => {
+    previousLevel: number;
+    newLevel: number;
+    leveledUp: boolean;
   };
   toggleHardcore: () => void;
   addTodo: (skillId: SkillId, actionId: string, actionName: string) => void;
@@ -62,6 +71,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   completedQuests: { dailyDate: todayStr(), daily: {}, weeklyDate: getWeekKey(), weekly: {} },
   todos: { lastResetDate: todayStr(), items: [] },
   lastDecayDate: null,
+  moneyLog: { entries: [], currentNetWorth: 0 },
 
   totalLevel: () => getTotalLevel(get().skills),
   title: () => getTitle(getTotalLevel(get().skills), get().hardcoreMode, get().penalty.tier),
@@ -188,6 +198,32 @@ export const useGameStore = create<GameStore>((set, get) => ({
     };
   },
 
+  logNetWorth: (netWorth, note?) => {
+    const entry: MoneyEntry = {
+      id: crypto.randomUUID(),
+      timestamp: Date.now(),
+      dateStr: todayStr(),
+      netWorth,
+      note,
+    };
+    const state = get();
+    const previousLevel = getMoneyLevel(state.moneyLog.currentNetWorth);
+    const newLevel = getMoneyLevel(netWorth);
+
+    set({
+      moneyLog: {
+        entries: [...state.moneyLog.entries, entry],
+        currentNetWorth: netWorth,
+      },
+    });
+
+    return {
+      previousLevel,
+      newLevel,
+      leveledUp: newLevel > previousLevel,
+    };
+  },
+
   toggleHardcore: () => {
     set(s => ({
       hardcoreMode: !s.hardcoreMode,
@@ -240,25 +276,33 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const today = todayStr();
     if (state.lastDecayDate === today) return { decayed: false, losses: [] };
 
-    // Check if any skill was logged yesterday
+    // Check if any skill was logged yesterday or if progress pictures/weight was logged yesterday
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
 
+    // Check action log for activity yesterday
     const loggedYesterday = state.log.some(l => {
       const d = new Date(l.timestamp);
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` === yesterdayStr;
     });
 
-    if (loggedYesterday || !state.lastDecayDate) {
+    // Also check progress pictures and weight log entries as activity
+    const hadProgressActivityYesterday =
+      (state.progressPictures?.uploads?.some((p: any) => p.dateStr === yesterdayStr) ?? false) ||
+      (state.weightLog?.entries?.some((w: any) => w.dateStr === yesterdayStr) ?? false) ||
+      (state.moneyLog?.entries?.some((m: any) => m.dateStr === yesterdayStr) ?? false);
+
+    if (loggedYesterday || hadProgressActivityYesterday || !state.lastDecayDate) {
       set({ lastDecayDate: today });
       return { decayed: false, losses: [] };
     }
 
     // Apply decay with protection against dropping below level 1
+    // Money skill is excluded from decay - it's based on net worth, not XP
     const losses: { skillId: string; amount: number }[] = [];
     const newSkills = state.skills.map(s => {
-      if (s.xp <= 0) return s;
+      if (s.xp <= 0 || s.id === 'money') return s;
       const amount = getDecayAmount(s.xp);
       losses.push({ skillId: s.id, amount });
 
