@@ -32,6 +32,7 @@ interface GameStore {
   };
   profilePicture: string | null;
   unlockedBadges: string[];
+  customActions: Record<string, { id: string; name: string; xp: number; custom: true }[]>;
 
   // Computed
   totalLevel: () => number;
@@ -65,6 +66,8 @@ interface GameStore {
   setAchievements: (ids: string[]) => void;
   setStreaks: (streaks: { global: StreakData; perSkill: Record<string, StreakData> }) => void;
   completeQuest: (questId: string, type: 'daily' | 'weekly') => void;
+  addCustomAction: (skillId: string, name: string, xp: number) => void;
+  removeCustomAction: (skillId: string, actionId: string) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -83,6 +86,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   moneyLog: { entries: [], currentNetWorth: 0 },
   profilePicture: null,
   unlockedBadges: [],
+  customActions: {},
 
   totalLevel: () => getTotalLevel(get().skills),
   title: () => getTitle(getTotalLevel(get().skills), get().hardcoreMode, get().penalty.tier),
@@ -215,21 +219,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   logNetWorth: (netWorth: number, note?: string) => {
+    const state = get();
+    const newTotal = state.moneyLog.currentNetWorth + netWorth;
     const entry: MoneyEntry = {
       id: crypto.randomUUID(),
       timestamp: Date.now(),
       dateStr: todayStr(),
-      netWorth,
+      netWorth: newTotal,
       note,
     };
-    const state = get();
     const previousLevel = getMoneyLevel(state.moneyLog.currentNetWorth);
-    const newLevel = getMoneyLevel(netWorth);
+    const newLevel = getMoneyLevel(newTotal);
 
     set({
       moneyLog: {
         entries: [...state.moneyLog.entries, entry],
-        currentNetWorth: netWorth,
+        currentNetWorth: newTotal,
       },
     });
 
@@ -346,4 +351,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return { completedQuests: newCompleted };
     });
   },
+  addCustomAction: (skillId, name, xp) => {
+    const cappedXp = Math.min(xp, 50); // Cap at 50 XP
+    const newAction = {
+      id: 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      name,
+      xp: cappedXp,
+      custom: true as const,
+    };
+    set(s => ({
+      customActions: {
+        ...s.customActions,
+        [skillId]: [...(s.customActions[skillId] || []), newAction],
+      },
+    }));
+  },
+
+  removeCustomAction: (skillId, actionId) => {
+    set(s => ({
+      customActions: {
+        ...s.customActions,
+        [skillId]: (s.customActions[skillId] || []).filter(a => a.id !== actionId),
+      },
+    }));
+  },
+
 }));
