@@ -10,6 +10,7 @@ import { getDailyQuests, getWeeklyQuests, getQuestProgress, isQuestComplete, tod
 import { checkAchievements, getAchievement, ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
 import { updateStreak, getDefaultStreaks, getStreakMultiplier as streakMult } from '@/lib/game-logic/streakSystem';
 import { getDefaultPenalty, checkDailyPenalty } from '@/lib/game-logic/hardcoreMode';
+import { checkBadges } from '@/lib/game-logic/badgeSystem';
 
 interface GameStore {
   // Core state
@@ -29,6 +30,8 @@ interface GameStore {
     entries: MoneyEntry[];
     currentNetWorth: number;
   };
+  profilePicture: string | null;
+  unlockedBadges: string[];
 
   // Computed
   totalLevel: () => number;
@@ -42,6 +45,7 @@ interface GameStore {
     newLevel: number;
     newAchievements: string[];
     questsCompleted: string[];
+    newBadges: string[];
   };
   logNetWorth: (netWorth: number, note?: string) => {
     previousLevel: number;
@@ -54,6 +58,7 @@ interface GameStore {
   toggleTodo: (index: number) => void;
   resetTodosIfNeeded: () => void;
   checkDecay: () => { decayed: boolean; losses: { skillId: string; amount: number }[] };
+  setProfilePicture: (dataUrl: string | null) => void;
   loadState: (state: Partial<GameStore>) => void;
   setSkills: (skills: SkillState[]) => void;
   setLog: (log: ActionLogEntry[]) => void;
@@ -76,6 +81,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   progressPictures: { uploads: [] },
   weightLog: { entries: [] },
   moneyLog: { entries: [], currentNetWorth: 0 },
+  profilePicture: null,
+  unlockedBadges: [],
 
   totalLevel: () => getTotalLevel(get().skills),
   title: () => getTitle(getTotalLevel(get().skills), get().hardcoreMode, get().penalty.tier),
@@ -83,7 +90,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   logAction: (skillId, actionId, actionName, baseXp) => {
     const state = get();
     const skillIndex = state.skills.findIndex(s => s.id === skillId);
-    if (skillIndex === -1) return { xpEarned: 0, leveledUp: false, previousLevel: 0, newLevel: 0, newAchievements: [], questsCompleted: [] };
+    if (skillIndex === -1) return { xpEarned: 0, leveledUp: false, previousLevel: 0, newLevel: 0, newAchievements: [], questsCompleted: [], newBadges: [] };
 
     // Calculate streak bonus
     const globalStreak = state.streaks.global.current;
@@ -142,6 +149,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       totalLevel: totalLvl,
     });
 
+    // Check badges
+    const newBadges = checkBadges(newSkills, state.unlockedBadges || []);
+
     // Check quest completion
     const today = todayStr();
     const weekKey = getWeekKey();
@@ -188,6 +198,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       log: newLog,
       streaks: newStreaks,
       unlockedAchievements: [...state.unlockedAchievements, ...newAchievements],
+      unlockedBadges: [...(state.unlockedBadges || []), ...newBadges],
       completedQuests: newCompletedQuests,
       todos: newTodos,
     });
@@ -199,6 +210,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newLevel,
       newAchievements,
       questsCompleted,
+      newBadges,
     };
   },
 
@@ -318,6 +330,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ skills: newSkills, lastDecayDate: today });
     return { decayed: losses.length > 0, losses };
   },
+
+  setProfilePicture: (dataUrl) => set({ profilePicture: dataUrl }),
 
   loadState: (state) => set(state),
   setSkills: (skills) => set({ skills }),
