@@ -26,14 +26,14 @@ export default function MoneyPage() {
     const netWorth = parseFloat(netWorthInput);
 
     if (isNaN(netWorth) || netWorth < 0) {
-      showToast('Please enter a valid net worth amount', 'error');
+      showToast('Please enter a valid amount', 'error');
       return;
     }
 
     setIsSubmitting(true);
 
     const result = logNetWorth(netWorth, note || undefined);
-    showToast('Net Worth logged: ' + formatMoney(netWorth), 'success');
+    showToast('Added ' + formatMoney(netWorth) + ' to net worth', 'success');
 
     if (result.leveledUp) {
       showLevelUpModal('money', result.newLevel);
@@ -75,12 +75,12 @@ export default function MoneyPage() {
       {/* Log Net Worth */}
       <div className="glass rounded-xl p-4 border border-border-subtle">
         <div className="mb-3">
-          <label className="text-sm font-medium block mb-2">Net Worth Amount</label>
+          <label className="text-sm font-medium block mb-2">Add to Net Worth</label>
           <input
             type="number"
             value={netWorthInput}
             onChange={(e) => setNetWorthInput(e.target.value)}
-            placeholder="Enter amount (e.g., 50000)"
+            placeholder="Amount to add (e.g., 500)"
             className="w-full px-4 py-2 rounded-lg bg-bg-secondary border border-border-subtle focus:border-accent-gold focus:outline-none"
             disabled={isSubmitting}
           />
@@ -92,7 +92,7 @@ export default function MoneyPage() {
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="E.g., Bonus received, After tax refund"
+            placeholder="E.g., Salary, side income, investment gains"
             className="w-full px-4 py-2 rounded-lg bg-bg-secondary border border-border-subtle focus:border-accent-gold focus:outline-none"
             disabled={isSubmitting}
           />
@@ -103,7 +103,7 @@ export default function MoneyPage() {
           disabled={isSubmitting || !netWorthInput.trim()}
           className="w-full px-4 py-3 rounded-lg bg-green-600 hover:bg-green-700 disabled:bg-green-600/50 text-white font-medium transition-colors"
         >
-          {isSubmitting ? 'Logging...' : 'Log Net Worth'}
+          {isSubmitting ? 'Adding...' : 'Add Income'}
         </button>
       </div>
 
