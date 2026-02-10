@@ -52,7 +52,7 @@ export default function DashboardPage() {
       {isGuest && (
         <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-lg">ðï¸</span>
+            <span className="text-lg">👁️</span>
             <div>
               <p className="text-sm font-medium text-blue-200">Playing as Guest</p>
               <p className="text-xs text-blue-300">Your progress is saved locally and will be lost if you clear your browser data</p>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
             )}
         <p className="text-text-secondary text-sm">
           Level {totalLevel}
-          {globalStreak > 0 && <span className="text-accent-gold ml-2">ð¥ {globalStreak} day streak</span>}
+          {globalStreak > 0 && <span className="text-accent-gold ml-2">🔥 {globalStreak} day streak</span>}
         </p>
         {hardcoreMode && penalty.tier && (
           <div className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold ${
@@ -96,7 +96,7 @@ export default function DashboardPage() {
             penalty.tier === 'penaltyZone' ? 'bg-orange-500/20 text-orange-400' :
             'bg-yellow-500/20 text-yellow-400'
           }`}>
-            {penalty.tier === 'critical' ? 'ð CRITICAL' : penalty.tier === 'penaltyZone' ? 'â ï¸ PENALTY ZONE' : 'â¡ WARNING'}
+            {penalty.tier === 'critical' ? '💀 CRITICAL' : penalty.tier === 'penaltyZone' ? '⚠️ PENALTY ZONE' : '⚡ WARNING'}
           </div>
         )}
       </div>
@@ -121,7 +121,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-lg">Skills</h2>
-          <Link href="/dashboard/skills" className="text-accent-gold text-sm">View All â</Link>
+          <Link href="/dashboard/skills" className="text-accent-gold text-sm">View All →</Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {SKILL_DEFS.filter(def => def.id !== 'money').map(def => {
@@ -146,7 +146,7 @@ export default function DashboardPage() {
         {/* Money Card - Special Category */}
         <Link href="/dashboard/money" className="block mt-3 glass rounded-xl p-4 border border-border-subtle hover:border-green-500/30 transition-all group">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-2xl">ð°</span>
+            <span className="text-2xl">💰</span>
             <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ color: '#22C55E', background: '#22C55E15' }}>
               Lv.{moneyLevel}
             </span>
