@@ -3,6 +3,7 @@
 // ============================================
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { SkillState, ActionLogEntry, StreakData, PenaltyState, QuestCompletion, TodoItem, SkillId, MoneyEntry, ProgressPicture, WeightEntry } from '@/lib/types';
 import { getLevel, getTotalLevel, getTitle, getStreakMultiplier, getDecayAmount, getMoneyLevel } from '@/lib/game-logic/levelSystem';
 import { getDefaultSkills, SKILL_DEFS } from '@/lib/game-logic/skillSystem';
@@ -70,7 +71,7 @@ interface GameStore {
   removeCustomAction: (skillId: string, actionId: string) => void;
 }
 
-export const useGameStore = create<GameStore>((set, get) => ({
+export const useGameStore = create<GameStore>()(persist((set, get) => ({
   skills: getDefaultSkills() as SkillState[],
   log: [],
   unlockedAchievements: [],
@@ -376,4 +377,27 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }));
   },
 
-}));
+}),
+  {
+    name: 'lifequest-game-state',
+    version: 1,
+    partialize: (state) => ({
+      skills: state.skills,
+      log: state.log,
+      unlockedAchievements: state.unlockedAchievements,
+      completedAchievementRewards: state.completedAchievementRewards,
+      streaks: state.streaks,
+      hardcoreMode: state.hardcoreMode,
+      penalty: state.penalty,
+      completedQuests: state.completedQuests,
+      todos: state.todos,
+      lastDecayDate: state.lastDecayDate,
+      progressPictures: state.progressPictures,
+      weightLog: state.weightLog,
+      moneyLog: state.moneyLog,
+      profilePicture: state.profilePicture,
+      unlockedBadges: state.unlockedBadges,
+      customActions: state.customActions,
+    }),
+  }
+));
