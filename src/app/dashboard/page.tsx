@@ -81,7 +81,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold">{title}</h1>
             {(unlockedBadges || []).length > 0 && (
               <div className="flex justify-center gap-1 mt-1">
-                {(unlockedBadges || []).slice(-3).reverse().map(id => getBadgeById(id)).filter(Boolean).map(badge => (
+                {(unlockedBadges || []).slice(-3).reverse().map(id => getBadgeById(id)).filter(Boolean).map(badge => badge && (
                   <span key={badge.id} title={badge.name} className="text-lg">{badge.icon}</span>
                 ))}
               </div>
