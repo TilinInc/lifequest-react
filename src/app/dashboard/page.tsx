@@ -70,11 +70,11 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="text-center pt-2">
         {profilePicture ? (
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-gold shadow-lg shadow-accent-gold/20">
+            <div className="w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-accent-gold shadow-lg shadow-accent-gold/20">
               <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
             </div>
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-2xl font-bold text-bg-primary">
+            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-2xl font-bold text-bg-primary">
               {title.charAt(0).toUpperCase()}
             </div>
           )}
