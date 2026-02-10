@@ -1,6 +1,7 @@
 'use client';
 
 import { useGameStore } from '@/store/useGameStore';
+import { getBadgeById } from '@/lib/game-logic/badgeSystem';
 import { useUIStore } from '@/store/useUIStore';
 import { getLevel, getXpProgress, getTitle, getTotalLevel, getSkillTitle, getTitleWithImage } from '@/lib/game-logic/levelSystem';
 import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
@@ -17,6 +18,8 @@ export default function DashboardPage() {
   const log = useGameStore(s => s.log);
   const streaks = useGameStore(s => s.streaks);
   const hardcoreMode = useGameStore(s => s.hardcoreMode);
+  const profilePicture = useGameStore(s => s.profilePicture);
+  const unlockedBadges = useGameStore(s => s.unlockedBadges);
   const penalty = useGameStore(s => s.penalty);
   const moneyLog = useGameStore(s => s.moneyLog);
   const showLogSheet = useUIStore(s => s.showLogSheet);
@@ -67,7 +70,15 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="text-center pt-2">
         <img
-          src={img}
+          src={profilePicture ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-gold shadow-lg shadow-accent-gold/20">
+                <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-2xl font-bold text-bg-primary border-2 border-accent-gold/30">
+                {title.charAt(0).toUpperCase()}
+              </div>
+            )}
           className="w-10 h-10 inline-block mb-2"
           style={{
             filter: 'invert(78%) sepia(61%) saturate(588%) hue-rotate(2deg) brightness(103%) contrast(104%)',
@@ -75,6 +86,13 @@ export default function DashboardPage() {
           alt="Title icon"
         />
         <h1 className="text-2xl font-bold">{title}</h1>
+            {(unlockedBadges || []).length > 0 && (
+              <div className="flex justify-center gap-1 mt-1">
+                {(unlockedBadges || []).slice(-3).reverse().map(id => getBadgeById(id)).filter(Boolean).map(badge => (
+                  <span key={badge.id} title={badge.name} className="text-lg">{badge.icon}</span>
+                ))}
+              </div>
+            )}
         <p className="text-text-secondary text-sm">
           Level {totalLevel}
           {globalStreak > 0 && <span className="text-accent-gold ml-2">ð¥ {globalStreak} day streak</span>}
