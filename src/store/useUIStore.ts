@@ -18,14 +18,14 @@ interface UIStore {
   showLogSheet: boolean;
   showLevelUp: { skillId: string; newLevel: number } | null;
   showAriseModal: boolean;
-  profileSection: 'main' | 'pictures' | 'weight';
+  profileSection: 'main' | 'pictures' | 'weight' | 'badges';
 
   openLogSheet: () => void;
   closeLogSheet: () => void;
   showLevelUpModal: (skillId: string, newLevel: number) => void;
   closeLevelUp: () => void;
   setAriseModal: (show: boolean) => void;
-  setProfileSection: (section: 'main' | 'pictures' | 'weight') => void;
+  setProfileSection: (section: 'main' | 'pictures' | 'weight' | 'badges') => void;
 
   // Toasts
   toasts: Toast[];
