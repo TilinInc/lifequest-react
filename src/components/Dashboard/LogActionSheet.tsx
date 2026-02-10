@@ -66,7 +66,7 @@ export default function LogActionSheet() {
                 <span className="text-xs text-text-muted">Lv.{level}</span>
                 <button
                   onClick={() => setCreatingFor(creatingFor === def.id ? null : def.id)}
-                  className="ml-auto text-xs px-2 py-0.5 rounded bg-bg-tertiary border border-border-subtle hover:border-accent-gold transition-colors"
+                  className="ml-auto text-xs font-bold px-3 py-1 rounded-lg bg-accent-gold/20 border border-accent-gold/50 text-accent-gold hover:bg-accent-gold/30 transition-colors"
                 >
                   + Custom
                 </button>
