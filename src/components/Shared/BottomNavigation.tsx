@@ -7,6 +7,7 @@ import { useSocialStore } from '@/store/useSocialStore';
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: '🏠', href: '/dashboard' },
   { id: 'quests', label: 'Quests', icon: '📜', href: '/dashboard/quests' },
+  { id: 'todos', label: 'Todos', icon: '✅', href: '/dashboard/todos' },
   { id: 'social', label: 'Social', icon: '👥', href: '/social/feed' },
   { id: 'achievements', label: 'Awards', icon: '🏆', href: '/dashboard/achievements' },
   { id: 'profile', label: 'Profile', icon: '👤', href: '/dashboard/profile' },
