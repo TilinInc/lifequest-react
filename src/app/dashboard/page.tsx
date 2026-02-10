@@ -69,22 +69,15 @@ export default function DashboardPage() {
 
       {/* Header */}
       <div className="text-center pt-2">
-        <img
-          src={profilePicture ? (
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-gold shadow-lg shadow-accent-gold/20">
-                <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-2xl font-bold text-bg-primary border-2 border-accent-gold/30">
-                {title.charAt(0).toUpperCase()}
-              </div>
-            )}
-          className="w-10 h-10 inline-block mb-2"
-          style={{
-            filter: 'invert(78%) sepia(61%) saturate(588%) hue-rotate(2deg) brightness(103%) contrast(104%)',
-          }}
-          alt="Title icon"
-        />
+        {profilePicture ? (
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-gold shadow-lg shadow-accent-gold/20">
+              <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent-gold to-accent-gold/60 flex items-center justify-center text-2xl font-bold text-bg-primary">
+              {title.charAt(0).toUpperCase()}
+            </div>
+          )}
         <h1 className="text-2xl font-bold">{title}</h1>
             {(unlockedBadges || []).length > 0 && (
               <div className="flex justify-center gap-1 mt-1">
