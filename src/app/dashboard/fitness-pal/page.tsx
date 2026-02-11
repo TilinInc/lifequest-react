@@ -390,7 +390,9 @@ export default function FitnessPalPage() {
             <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider">Skill Comparison</h3>
             {skills.map((skill, i) => {
               const yourLv = getLevel(skill.xp);
-              const rivalSkill = rival.skills.find(rs => rs.name === skill.name);
+              const skillDef = SKILL_DEFS.find(sd => sd.id === skill.id);
+              const skillName = skillDef?.name || skill.id;
+              const rivalSkill = rival.skills.find(rs => rs.name === skillName);
               const rivalLv = rivalSkill ? getLevel(rivalSkill.xp) : 0;
               const maxLv = Math.max(yourLv, rivalLv, 1);
               const you_pct = (yourLv / maxLv) * 100;
@@ -398,9 +400,9 @@ export default function FitnessPalPage() {
               const winning = yourLv >= rivalLv;
 
               return (
-                <div key={skill.name} className="bg-bg-secondary rounded-xl border border-border-subtle p-3">
+                <div key={skill.id} className="bg-bg-secondary rounded-xl border border-border-subtle p-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-semibold text-text-primary">{skill.name}</span>
+                    <span className="text-sm font-semibold text-text-primary">{skillName}</span>
                     <span className={`text-xs font-bold ${winning ? 'text-green-400' : 'text-accent-red'}`}>
                       {winning ? '+' : ''}{yourLv - rivalLv}
                     </span>
