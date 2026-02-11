@@ -1,8 +1,10 @@
 'use client';
 
 import { useRef, useCallback } from 'react';
+import Link from 'next/link';
 import { useGameStore } from '@/store/useGameStore';
 import { useUIStore } from '@/store/useUIStore';
+import { useAuth } from '@/hooks/useAuth';
 import { getLevel, getTotalLevel, getTitle, getSkillTitle } from '@/lib/game-logic/levelSystem';
 import { SKILL_DEFS } from '@/lib/game-logic/skillSystem';
 import { ACHIEVEMENTS } from '@/lib/game-logic/achievementSystem';
@@ -11,6 +13,8 @@ import { BADGES, getBadgeById } from '@/lib/game-logic/badgeSystem';
 export default function ProfilePage() {
   const profileSection = useUIStore(s => s.profileSection);
   const setProfileSection = useUIStore(s => s.setProfileSection);
+  const { user, isGuest, signOut } = useAuth();
+
   const skills = useGameStore(s => s.skills);
   const log = useGameStore(s => s.log);
   const unlockedAchievements = useGameStore(s => s.unlockedAchievements);
@@ -28,7 +32,6 @@ export default function ProfilePage() {
   const globalStreak = streaks.global.current;
   const bestStreak = streaks.global.best;
   const totalActions = log.length;
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pictureInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,6 +78,7 @@ export default function ProfilePage() {
   };
 
   const handleImport = () => { fileInputRef.current?.click(); };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -86,12 +90,8 @@ export default function ProfilePage() {
         if (importedState.skills && importedState.log && importedState.unlockedAchievements) {
           loadState(importedState);
           alert('Game state imported successfully!');
-        } else {
-          alert('Invalid game state file.');
-        }
-      } catch (err) {
-        alert('Failed to import game state.');
-      }
+        } else { alert('Invalid game state file.'); }
+      } catch (err) { alert('Failed to import game state.'); }
     };
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -104,11 +104,11 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'\u2190'}</button>
+          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'←'}</button>
           <h1 className="text-2xl font-bold">Progress Pictures</h1>
         </div>
         <div className="text-center py-12">
-          <div className="text-5xl mb-4 opacity-50">{'\uD83D\uDCF8'}</div>
+          <div className="text-5xl mb-4 opacity-50">{'📸'}</div>
           <p className="text-text-muted">Progress pictures feature coming soon</p>
         </div>
       </div>
@@ -119,11 +119,11 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'\u2190'}</button>
+          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'←'}</button>
           <h1 className="text-2xl font-bold">Weight Log</h1>
         </div>
         <div className="text-center py-12">
-          <div className="text-5xl mb-4 opacity-50">{'\u2696\uFE0F'}</div>
+          <div className="text-5xl mb-4 opacity-50">{'⚖️'}</div>
           <p className="text-text-muted">Weight log feature coming soon</p>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'\u2190'}</button>
+          <button onClick={() => setProfileSection('main')} className="text-2xl hover:opacity-70 transition">{'←'}</button>
           <h1 className="text-2xl font-bold">Badges</h1>
           <span className="text-sm text-text-muted ml-auto">{badgeData.length}/{BADGES.length}</span>
         </div>
@@ -150,7 +150,7 @@ export default function ProfilePage() {
               return (
                 <div key={tier}>
                   <h3 className={`text-sm font-bold uppercase tracking-wider mb-2 ${tierColors[tier] || 'text-text-muted'}`}>
-                    {tier === 'special' ? '\u2B50 Special' : `${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier`}
+                    {tier === 'special' ? '⭐ Special' : `${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier`}
                   </h3>
                   <div className="grid grid-cols-3 gap-2">
                     {tierBadges.map(badge => {
@@ -175,6 +175,34 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
+      {/* Account Status */}
+      {isGuest ? (
+        <div className="glass rounded-xl p-4 border border-yellow-500/30 bg-yellow-500/5">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-bold text-yellow-400">Guest Mode</div>
+              <p className="text-xs text-text-muted mt-0.5">Sign up to save your progress to the cloud</p>
+            </div>
+            <Link href="/auth/signup" className="px-3 py-1.5 rounded-lg bg-accent-gold text-bg-primary font-bold text-sm hover:brightness-110 transition-all">
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      ) : user ? (
+        <div className="glass rounded-xl p-4 border border-green-500/30 bg-green-500/5">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-bold text-green-400">✓ Signed In</div>
+              <p className="text-xs text-text-muted mt-0.5">{user.email || user.user_metadata?.username || 'Authenticated'}</p>
+            </div>
+            <button onClick={signOut} className="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-sm hover:bg-red-500/30 transition-all">
+              Log Out
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Profile Header */}
       <div className="text-center pt-2">
         <div className="flex justify-center mb-4">
           <button onClick={() => pictureInputRef.current?.click()} className="relative group">
@@ -188,10 +216,10 @@ export default function ProfilePage() {
               </div>
             )}
             <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="text-xl">{'\uD83D\uDCF7'}</span>
+              <span className="text-xl">{'📷'}</span>
             </div>
             <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-accent-gold flex items-center justify-center text-bg-primary text-xs font-bold shadow">
-              {'\u270F\uFE0F'}
+              {'✏️'}
             </div>
           </button>
           <input ref={pictureInputRef} type="file" accept="image/*" onChange={handlePictureUpload} className="hidden" aria-label="Upload profile picture" />
@@ -203,11 +231,12 @@ export default function ProfilePage() {
         )}
       </div>
 
+      {/* Badges */}
       {badgeData.length > 0 ? (
         <button onClick={() => setProfileSection('badges')} className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold hover:shadow-lg hover:shadow-accent-gold/20 transition-all">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-text-primary">{'\uD83C\uDFC5'} Badges</h3>
-            <span className="text-xs text-text-muted">{badgeData.length}/{BADGES.length} {'\u2192'}</span>
+            <h3 className="font-bold text-text-primary">{'🏅'} Badges</h3>
+            <span className="text-xs text-text-muted">{badgeData.length}/{BADGES.length} {'→'}</span>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {badgeData.slice(-6).reverse().map(badge => badge && (
@@ -218,12 +247,13 @@ export default function ProfilePage() {
         </button>
       ) : (
         <button onClick={() => setProfileSection('badges')} className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold transition-all text-left">
-          <div className="text-3xl mb-2">{'\uD83C\uDFC5'}</div>
+          <div className="text-3xl mb-2">{'🏅'}</div>
           <h3 className="font-bold text-text-primary">Badges</h3>
           <p className="text-xs text-text-muted mt-1">Earn badges by leveling up your skills</p>
         </button>
       )}
 
+      {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
         <div className="glass rounded-xl p-4 border border-border-subtle">
           <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Total Level</div>
@@ -231,11 +261,11 @@ export default function ProfilePage() {
         </div>
         <div className="glass rounded-xl p-4 border border-border-subtle">
           <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Global Streak</div>
-          <div className="text-3xl font-bold">{globalStreak} {'\uD83D\uDD25'}</div>
+          <div className="text-3xl font-bold">{globalStreak} {'🔥'}</div>
         </div>
         <div className="glass rounded-xl p-4 border border-border-subtle">
           <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Best Streak</div>
-          <div className="text-3xl font-bold">{bestStreak} {'\uD83C\uDFC6'}</div>
+          <div className="text-3xl font-bold">{bestStreak} {'🏆'}</div>
         </div>
         <div className="glass rounded-xl p-4 border border-border-subtle">
           <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Actions Logged</div>
@@ -250,6 +280,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Skills */}
       <div>
         <h2 className="font-bold text-lg mb-3">Skills</h2>
         <div className="overflow-x-auto pb-2">
@@ -260,7 +291,8 @@ export default function ProfilePage() {
               const level = getLevel(xp);
               const skillTitle = getSkillTitle(skillDef.id, level);
               return (
-                <div key={skillDef.id} className="glass rounded-xl px-4 py-3 border border-border-subtle whitespace-nowrap flex items-center gap-3" style={{ borderColor: skillDef.color + '33', background: skillDef.color + '08' }}>
+                <div key={skillDef.id} className="glass rounded-xl px-4 py-3 border border-border-subtle whitespace-nowrap flex items-center gap-3"
+                  style={{ borderColor: skillDef.color + '33', background: skillDef.color + '08' }}>
                   <div className="text-2xl">{skillDef.icon}</div>
                   <div>
                     <div className="text-xs text-text-muted uppercase tracking-wider font-bold">{skillDef.name}</div>
@@ -274,6 +306,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Hardcore Mode */}
       <div className="glass rounded-xl p-4 border border-border-subtle">
         <div className="flex items-center justify-between">
           <div>
@@ -286,27 +319,39 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Progress Pictures & Weight */}
       <div className="space-y-3">
         <button onClick={() => setProfileSection('pictures')} className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold hover:shadow-lg hover:shadow-accent-gold/20 transition-all text-left">
-          <div className="text-3xl mb-2">{'\uD83D\uDCF8'}</div>
+          <div className="text-3xl mb-2">{'📸'}</div>
           <h3 className="font-bold text-text-primary">Progress Pictures</h3>
           <p className="text-xs text-text-muted mt-1">Track your physical transformation</p>
         </button>
         <button onClick={() => setProfileSection('weight')} className="w-full glass rounded-xl p-4 border border-border-subtle hover:border-accent-gold hover:shadow-lg hover:shadow-accent-gold/20 transition-all text-left">
-          <div className="text-3xl mb-2">{'\u2696\uFE0F'}</div>
+          <div className="text-3xl mb-2">{'⚖️'}</div>
           <h3 className="font-bold text-text-primary">Weight Log</h3>
           <p className="text-xs text-text-muted mt-1">Monitor your weight progression</p>
         </button>
       </div>
 
+      {/* Export/Import */}
       <div className="space-y-3">
         <button onClick={handleExport} className="w-full glass rounded-xl px-4 py-3 border border-border-subtle text-text-primary font-bold hover:border-accent-gold hover:bg-accent-gold/5 transition-all flex items-center justify-center gap-2">
-          <span>{'\uD83D\uDCE5'}</span> Export Game State
+          <span>{'📥'}</span> Export Game State
         </button>
         <button onClick={handleImport} className="w-full glass rounded-xl px-4 py-3 border border-border-subtle text-text-primary font-bold hover:border-accent-gold hover:bg-accent-gold/5 transition-all flex items-center justify-center gap-2">
-          <span>{'\uD83D\uDCE4'}</span> Import Game State
+          <span>{'📤'}</span> Import Game State
         </button>
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileSelect} className="hidden" aria-label="Import game state file" />
+      </div>
+
+      {/* Logout (bottom) */}
+      <div className="pt-4 pb-20">
+        <button
+          onClick={signOut}
+          className="w-full glass rounded-xl px-4 py-3 border border-red-500/30 text-red-400 font-bold hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
+        >
+          {isGuest ? '👤 Exit Guest Mode' : '🚪 Log Out'}
+        </button>
       </div>
     </div>
   );
